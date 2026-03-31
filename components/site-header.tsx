@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { HeaderSearch } from "@/components/header-search";
 import { AuthNav } from "@/components/auth-nav";
@@ -12,7 +13,9 @@ export function SiteHeader() {
           Rivayat
         </Link>
         <div className="order-3 sm:order-none sm:justify-self-center sm:w-full sm:max-w-xl">
-          <HeaderSearch />
+          <Suspense fallback={<div className="h-11 w-full rounded-full bg-white/70" />}>
+            <HeaderSearch />
+          </Suspense>
         </div>
         <div className="justify-self-end">
           <AuthNav />

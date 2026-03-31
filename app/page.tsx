@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { HomeFeed } from "@/components/home-feed";
 
@@ -17,7 +18,9 @@ export default function HomePage() {
           <p className="text-sm uppercase tracking-[0.22em] text-ink/48">Latest writing</p>
           <h2 className="font-display text-3xl text-ink">Read what deserves time</h2>
         </div>
-        <HomeFeed />
+        <Suspense fallback={<p className="text-sm text-ink/60">Loading posts...</p>}>
+          <HomeFeed />
+        </Suspense>
       </section>
     </div>
   );

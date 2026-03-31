@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
+import { logAction } from "@/lib/action-log";
 import { createNotification } from "@/lib/notifications";
 import { commentSchema } from "@/lib/validations";
 
@@ -48,6 +49,12 @@ export async function POST(
         postId,
       });
     }
+
+    logAction("comment_added", {
+      userId: user.id,
+      postId,
+      commentId: comment.id,
+    });
 
     return NextResponse.json({ comment }, { status: 201 });
   } catch (error) {

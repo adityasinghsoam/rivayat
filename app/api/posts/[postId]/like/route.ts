@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
+import { logAction } from "@/lib/action-log";
 import { createNotification } from "@/lib/notifications";
 
 export async function POST(
@@ -56,6 +57,12 @@ export async function POST(
 
     const likeCount = await prisma.like.count({
       where: { postId },
+    });
+
+    logAction("post_liked", {
+      userId: user.id,
+      postId,
+      liked: !existingLike,
     });
 
     return NextResponse.json({

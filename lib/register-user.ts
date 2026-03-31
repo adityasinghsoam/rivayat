@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, setSessionCookie, signAuthToken } from "@/lib/auth";
@@ -6,17 +7,18 @@ import { signupSchema } from "@/lib/validations";
 export async function registerUser(input: unknown) {
   const data = signupSchema.parse(input);
 
-  const existingUser = await prisma.user.findFirst({
-    where: {
-      OR: [{ email: data.email }, { username: data.username }],
-    },
-    select: {
-      email: true,
-      username: true,
-    },
-  });
+  const [existingEmailUser, existingUsernameUser] = await Promise.all([
+    prisma.user.findUnique({
+      where: { email: data.email },
+      select: { id: true },
+    }),
+    prisma.user.findUnique({
+      where: { username: data.username },
+      select: { id: true },
+    }),
+  ]);
 
-  if (existingUser?.email === data.email) {
+  if (existingEmailUser) {
     return {
       ok: false as const,
       status: 409,
@@ -24,7 +26,7 @@ export async function registerUser(input: unknown) {
     };
   }
 
-  if (existingUser?.username === data.username) {
+  if (existingUsernameUser) {
     return {
       ok: false as const,
       status: 409,
@@ -34,27 +36,45 @@ export async function registerUser(input: unknown) {
 
   const passwordHash = await hashPassword(data.password);
 
-  const user = await prisma.user.create({
-    data: {
-      name: data.name,
-      username: data.username,
-      email: data.email,
-      passwordHash,
-    },
-    select: {
-      id: true,
-      name: true,
-      username: true,
-      email: true,
-    },
-  });
+  let user;
+
+  try {
+    user = await prisma.user.create({
+      data: {
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        passwordHash,
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      return {
+        ok: false as const,
+        status: 409,
+        error: "Email or username is already in use.",
+      };
+    }
+
+    throw error;
+  }
 
   const token = await signAuthToken({
     id: user.id,
     email: user.email,
   });
 
-  await setSessionCookie(token);
+  try {
+    await setSessionCookie(token);
+  } catch {
+    // Returning the token is enough for the frontend auth flow.
+  }
 
   return {
     ok: true as const,
@@ -71,6 +91,10 @@ export function getRegistrationErrorMessage(error: unknown) {
 
   if (error instanceof SyntaxError) {
     return "Invalid request body.";
+  }
+
+  if (error instanceof Error) {
+    return error.message || "Unable to register user.";
   }
 
   return "Unable to register user.";

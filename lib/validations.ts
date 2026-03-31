@@ -14,8 +14,8 @@ export const signupSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).max(64),
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters.").max(64, "Password must be 64 characters or fewer."),
 });
 
 export const postSchema = z.object({

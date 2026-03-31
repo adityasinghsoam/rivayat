@@ -7,6 +7,7 @@ import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { formatDate } from "@/lib/utils";
 
 type ProfileData = {
@@ -89,6 +90,7 @@ export function ProfileView({ username }: { username: string }) {
             }
           : current,
       );
+      trackEvent("follow_action", { following: data.isFollowing });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to update follow status.");
     } finally {

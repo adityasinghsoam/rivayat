@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, requireUser } from "@/lib/auth";
+import { logAction } from "@/lib/action-log";
 import { makeExcerpt, makeSlug } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
@@ -204,6 +205,11 @@ export async function POST(request: Request) {
         language: data.language,
         authorId: user.id,
       },
+    });
+
+    logAction("post_created", {
+      userId: user.id,
+      postId: post.id,
     });
 
     return NextResponse.json({ post }, { status: 201 });

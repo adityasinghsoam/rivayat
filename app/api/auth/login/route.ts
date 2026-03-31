@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { setSessionCookie, signAuthToken } from "@/lib/auth";
+import { comparePassword, setSessionCookie, signAuthToken } from "@/lib/auth";
+import { logAction } from "@/lib/action-log";
 import { loginSchema } from "@/lib/validations";
 import { ZodError } from "zod";
 
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
 
-    const passwordMatches = await bcrypt.compare(data.password, user.passwordHash);
+    const passwordMatches = await comparePassword(data.password, user.passwordHash);
 
     if (!passwordMatches) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
@@ -35,7 +35,15 @@ export async function POST(request: Request) {
       email: user.email,
     });
 
-    await setSessionCookie(token);
+    try {
+      await setSessionCookie(token);
+    } catch {
+      // Returning the JWT token is enough for the client auth flow.
+    }
+
+    logAction("user_login", {
+      userId: user.id,
+    });
 
     return NextResponse.json({
       token,
@@ -54,6 +62,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
 
-    return NextResponse.json({ error: "Unable to log in" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to log in" }, { status: 500 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
+import { logAction } from "@/lib/action-log";
 import { createNotification } from "@/lib/notifications";
 
 export async function POST(
@@ -71,6 +72,12 @@ export async function POST(
         },
       }),
     ]);
+
+    logAction("follow_action", {
+      userId: currentUser.id,
+      targetUserId: targetUser.id,
+      following: !existingFollow,
+    });
 
     return NextResponse.json({
       isFollowing: !existingFollow,

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Heart } from "lucide-react";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 
@@ -40,6 +41,7 @@ export function LikeButton({
       });
       setLiked(data.liked);
       setCount(data.likeCount);
+      trackEvent("post_liked", { liked: data.liked });
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to update like");
     } finally {

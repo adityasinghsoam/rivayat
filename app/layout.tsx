@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { SiteHeader } from "@/components/site-header";
@@ -20,6 +21,7 @@ export default function RootLayout({
           <SiteHeader />
           <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">{children}</main>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );

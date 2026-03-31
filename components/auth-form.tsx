@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/auth-provider";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       });
 
       setAuth(data.user ?? null, data.token ?? null);
+      trackEvent(mode === "signup" ? "user_signup" : "user_login");
 
       router.push("/");
       router.refresh();

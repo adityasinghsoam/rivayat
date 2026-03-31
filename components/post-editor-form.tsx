@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,6 +55,7 @@ export function PostEditorForm({ initialValue }: { initialValue?: EditorPayload 
           method: "POST",
           body: JSON.stringify(payload),
         });
+        trackEvent("post_created", { language });
         router.push("/");
       }
 

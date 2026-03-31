@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { apiFetch } from "@/lib/api";
+import { trackEvent } from "@/lib/analytics";
 import { formatDate } from "@/lib/utils";
 
 type CommentItem = {
@@ -55,6 +56,7 @@ export function CommentsSection({ postId }: { postId: string }) {
         method: "POST",
         body: JSON.stringify({ content }),
       });
+      trackEvent("comment_added");
       setContent("");
       await loadComments();
     } catch (err) {

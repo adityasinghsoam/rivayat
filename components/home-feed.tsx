@@ -60,7 +60,7 @@ export function HomeFeed() {
         params.set("cursor", nextCursor);
       }
 
-      const endpoint = params.toString() ? `/api/posts?${params.toString()}` : "/api/posts";
+      const endpoint = params.toString() ? `/api/posts/explore?${params.toString()}` : "/api/posts/explore";
       const data = await apiFetch<{
         posts: FeedPost[];
         emptyStateMessage?: string | null;
@@ -110,9 +110,7 @@ export function HomeFeed() {
           void loadPosts(false);
         }
       },
-      {
-        rootMargin: "300px",
-      },
+      { rootMargin: "300px" },
     );
 
     observer.observe(sentinelRef.current);
@@ -132,7 +130,7 @@ export function HomeFeed() {
 
   if (!posts.length) {
     return (
-      <Card className="mx-auto max-w-3xl space-y-2 p-8 text-center">
+      <Card className="mx-auto flex max-w-3xl flex-col gap-3 p-8 text-center">
         <p className="font-display text-3xl text-ink">Nothing here yet</p>
         <p className="text-sm text-ink/65">{emptyStateMessage || "Start writing your first story"}</p>
       </Card>
@@ -142,10 +140,15 @@ export function HomeFeed() {
   return (
     <div className="space-y-5">
       {posts.map((post) => (
-        <Card key={post.slug} className="space-y-4 p-7 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)]">
-          <Link href={`/post/${post.slug}`} className="block space-y-3">
-            <h2 className="font-display text-[2rem] leading-tight text-ink sm:text-[2.35rem]">{post.title}</h2>
-            <p className="max-w-3xl text-[15px] leading-8 text-ink/74">{post.excerpt}</p>
+        <Card
+          key={post.slug}
+          className="flex min-w-0 flex-col gap-4 p-6 sm:p-7 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)]"
+        >
+          <Link href={`/post/${post.slug}`} className="block min-w-0">
+            <h2 className="mb-3 break-words font-display text-[1.8rem] leading-tight text-ink sm:text-[2.2rem]">
+              {post.title}
+            </h2>
+            <p className="max-w-3xl break-words text-[15px] leading-8 text-ink/74">{post.excerpt}</p>
           </Link>
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
@@ -154,7 +157,7 @@ export function HomeFeed() {
               </Link>
             ))}
           </div>
-          <div className="flex items-center justify-between gap-4 border-t border-black/5 pt-4">
+          <div className="flex flex-col gap-3 border-t border-black/5 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-ink/58">
               <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-ember">
                 {post.author.name}

@@ -38,6 +38,9 @@ export function AuthNav() {
       <Link href="/" className="px-3 py-2 text-sm text-ink/75 transition hover:text-ink">
         Explore
       </Link>
+      <Link href={"/saved" as Route} className="px-3 py-2 text-sm text-ink/80 transition hover:text-ink">
+        Saved
+      </Link>
       <Link href="/write" className="px-3 py-2 text-sm text-ink/80 transition hover:text-ink">
         Write
       </Link>

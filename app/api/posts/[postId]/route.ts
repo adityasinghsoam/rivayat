@@ -24,6 +24,7 @@ export async function GET(
       _count: {
         select: {
           likes: true,
+          comments: true,
         },
       },
       likes: user
@@ -36,10 +37,23 @@ export async function GET(
             },
           }
         : false,
+      bookmarks: user
+        ? {
+            where: {
+              userId: user.id,
+            },
+            select: {
+              id: true,
+            },
+          }
+        : false,
       author: {
         select: {
+          id: true,
           name: true,
           username: true,
+          bio: true,
+          avatarUrl: true,
         },
       },
     },
@@ -47,6 +61,24 @@ export async function GET(
 
   if (!post) {
     return NextResponse.json({ error: "Post not found." }, { status: 404 });
+  }
+
+  let isFollowingAuthor = false;
+
+  if (user && user.id !== post.author.id) {
+    const follow = await prisma.follow.findUnique({
+      where: {
+        followerId_followingId: {
+          followerId: user.id,
+          followingId: post.author.id,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    isFollowingAuthor = Boolean(follow);
   }
 
   return NextResponse.json({
@@ -58,8 +90,13 @@ export async function GET(
       tags: post.tags,
       language: post.language,
       likeCount: post._count.likes,
+      commentCount: post._count.comments,
       likedByMe: Array.isArray(post.likes) ? post.likes.length > 0 : false,
-      author: post.author,
+      bookmarkedByMe: Array.isArray(post.bookmarks) ? post.bookmarks.length > 0 : false,
+      author: {
+        ...post.author,
+        isFollowing: isFollowingAuthor,
+      },
     },
   });
 }

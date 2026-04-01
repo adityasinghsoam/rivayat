@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { CommentsSection } from "@/components/comments-section";
 import { LikeButton } from "@/components/post-interactions";
+import { BookmarkButton } from "@/components/bookmark-button";
+import { FollowButton } from "@/components/follow-button";
 import { apiFetch } from "@/lib/api";
 import { sanitizeRichText } from "@/lib/sanitize-html";
 import { formatDate } from "@/lib/utils";
@@ -19,10 +21,16 @@ type PostDetailData = {
   tags: string[];
   language: "ENGLISH" | "HINDI";
   likeCount: number;
+  commentCount: number;
   likedByMe: boolean;
+  bookmarkedByMe: boolean;
   author: {
+    id: string;
     name: string;
     username: string;
+    bio: string | null;
+    avatarUrl: string | null;
+    isFollowing: boolean;
   };
 };
 
@@ -57,8 +65,8 @@ export function PostDetail({ slug }: { slug: string }) {
   }
 
   return (
-    <article className="mx-auto max-w-3xl space-y-6">
-      <header className="space-y-3">
+    <article className="mx-auto flex max-w-4xl flex-col gap-6 px-1">
+      <header className="flex flex-col gap-5 rounded-[2rem] border border-black/5 bg-white/55 p-6 sm:p-8">
         <div className="flex flex-wrap gap-2">
           <Badge>{post.language}</Badge>
           {post.tags.map((tag) => (
@@ -67,23 +75,49 @@ export function PostDetail({ slug }: { slug: string }) {
             </Link>
           ))}
         </div>
-        <h1 className="font-display text-5xl leading-tight text-ink">{post.title}</h1>
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-ink/60">
-            <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink">
-              {post.author.name}
-            </Link>{" "}
-            · {formatDate(post.createdAt)}
-          </p>
-          <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
+        <div className="space-y-4">
+          <h1 className="break-words font-display text-4xl leading-tight text-ink sm:text-5xl lg:text-6xl">
+            {post.title}
+          </h1>
+          <div className="border-b border-black/5 pb-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-ink/6 text-lg font-semibold text-ink/60">
+                  {post.author.avatarUrl ? (
+                    <img src={post.author.avatarUrl} alt={post.author.name} className="h-full w-full object-cover" />
+                  ) : (
+                    post.author.name.charAt(0).toUpperCase()
+                  )}
+                </div>
+                <div>
+                  <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-ember">
+                    {post.author.name}
+                  </Link>
+                  <p className="text-sm text-ink/55">@{post.author.username} · {formatDate(post.createdAt)}</p>
+                </div>
+              </div>
+              <FollowButton username={post.author.username} initialFollowing={post.author.isFollowing} />
+            </div>
+            {post.author.bio ? <p className="mt-4 max-w-2xl text-sm leading-7 text-ink/70">{post.author.bio}</p> : null}
+          </div>
         </div>
       </header>
-      <Card className="p-8">
+
+      <Card className="overflow-hidden p-0">
         <div
-          className="prose prose-stone prose-lg mx-auto max-w-none text-[1.1rem] leading-9 text-ink/90 [&_blockquote]:border-l-2 [&_blockquote]:border-ember [&_blockquote]:pl-4 [&_h1]:mb-4 [&_h1]:mt-8 [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-3 [&_h2]:mt-7 [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-4 [&_p]:whitespace-pre-wrap"
+          className="prose prose-stone prose-lg mx-auto max-w-3xl break-words px-6 py-10 text-[1.08rem] leading-10 text-ink/90 sm:px-10 sm:py-12 [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:bg-ember/5 [&_blockquote]:border-l-4 [&_blockquote]:border-ember [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
         />
       </Card>
+
+      <Card className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div className="flex flex-wrap items-center gap-4">
+          <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
+          <p className="text-sm text-ink/60">{post.commentCount} comments</p>
+        </div>
+        <BookmarkButton postId={post.id} initialBookmarked={post.bookmarkedByMe} />
+      </Card>
+
       <CommentsSection postId={post.id} />
     </article>
   );

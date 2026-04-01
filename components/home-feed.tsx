@@ -61,11 +61,15 @@ export function HomeFeed() {
       }
 
       const endpoint = params.toString() ? `/api/posts/explore?${params.toString()}` : "/api/posts/explore";
+      console.log("[Explore] Fetching posts from:", endpoint);
+
       const data = await apiFetch<{
         posts: FeedPost[];
         emptyStateMessage?: string | null;
         nextCursor?: string | null;
       }>(endpoint);
+
+      console.log("[Explore] Received posts:", data.posts.length, "nextCursor:", data.nextCursor ?? null);
 
       setEmptyStateMessage(data.emptyStateMessage ?? null);
       setNextCursor(data.nextCursor ?? null);
@@ -73,10 +77,12 @@ export function HomeFeed() {
       setPosts((current) => {
         const merged = reset ? data.posts : [...current, ...data.posts];
         const seen = new Set<string>();
+
         return merged.filter((post) => {
           if (seen.has(post.id)) {
             return false;
           }
+
           seen.add(post.id);
           return true;
         });
@@ -142,7 +148,7 @@ export function HomeFeed() {
       {posts.map((post) => (
         <Card
           key={post.slug}
-          className="flex min-w-0 flex-col gap-4 p-6 sm:p-7 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)]"
+          className="flex min-w-0 flex-col gap-4 p-6 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)] sm:p-7"
         >
           <Link href={`/post/${post.slug}`} className="block min-w-0">
             <h2 className="mb-3 break-words font-display text-[1.8rem] leading-tight text-ink sm:text-[2.2rem]">
@@ -150,6 +156,7 @@ export function HomeFeed() {
             </h2>
             <p className="max-w-3xl break-words text-[15px] leading-8 text-ink/74">{post.excerpt}</p>
           </Link>
+
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
@@ -157,6 +164,7 @@ export function HomeFeed() {
               </Link>
             ))}
           </div>
+
           <div className="flex flex-col gap-3 border-t border-black/5 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-ink/58">
               <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-ember">
@@ -168,6 +176,7 @@ export function HomeFeed() {
           </div>
         </Card>
       ))}
+
       {loadingMore ? <p className="py-2 text-center text-sm text-ink/60">Loading more posts...</p> : null}
       {!hasMore ? <p className="py-2 text-center text-sm text-ink/60">No more posts</p> : null}
       <div ref={sentinelRef} className="h-1" />

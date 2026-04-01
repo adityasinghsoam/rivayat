@@ -80,16 +80,16 @@ export function NotificationBell() {
 
   return (
     <div className="relative">
-      <Button variant="ghost" className="relative rounded-full px-3 hover:bg-ink/6" onClick={toggleOpen}>
+      <Button variant="ghost" className="relative rounded-full px-3" onClick={toggleOpen}>
         <Bell size={18} />
         {unreadCount > 0 ? (
-          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-ember px-1 text-[10px] font-semibold text-white">
+          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-700 px-1 text-[10px] font-semibold text-white">
             {unreadCount}
           </span>
         ) : null}
       </Button>
       {open ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-80 rounded-3xl border border-black/5 bg-white/96 p-4 shadow-card backdrop-blur">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-80 rounded-3xl border border-neutral-200 bg-white/96 p-4 shadow-md backdrop-blur">
           <div className="space-y-3">
             <p className="text-sm font-semibold text-ink">Notifications</p>
             {notifications.length ? (
@@ -97,7 +97,7 @@ export function NotificationBell() {
                 <Link
                   key={notification.id}
                   href={notificationHref(notification)}
-                  className="block rounded-2xl p-3 transition hover:bg-ink/5"
+                  className="block rounded-2xl p-3 transition-all duration-200 hover:bg-neutral-50"
                   onClick={() => setOpen(false)}
                 >
                   <p className="text-sm text-ink">{notificationLabel(notification)}</p>

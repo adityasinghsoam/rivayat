@@ -146,28 +146,25 @@ export function HomeFeed() {
   return (
     <div className="space-y-5">
       {posts.map((post) => (
-        <Card
-          key={post.slug}
-          className="flex min-w-0 flex-col gap-4 p-6 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)] sm:p-7"
-        >
+        <Card key={post.slug} className="flex min-w-0 flex-col gap-4 border-neutral-200 p-6 transition-transform duration-200 hover:-translate-y-1 sm:p-7">
           <Link href={`/post/${post.slug}`} className="block min-w-0">
-            <h2 className="mb-3 break-words font-display text-[1.8rem] leading-tight text-ink sm:text-[2.2rem]">
+            <h2 className="mb-3 break-words font-display text-[1.7rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2.1rem]">
               {post.title}
             </h2>
-            <p className="max-w-3xl break-words text-[15px] leading-8 text-ink/74">{post.excerpt}</p>
+            <p className="max-w-3xl break-words text-[15px] leading-7 text-neutral-700">{post.excerpt}</p>
           </Link>
 
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-                <Badge className="bg-ink/5 text-ink/70 transition hover:bg-ink/10">#{tag}</Badge>
+                <Badge className="bg-neutral-100 text-neutral-700 transition hover:bg-amber-100 hover:text-amber-700">#{tag}</Badge>
               </Link>
             ))}
           </div>
 
           <div className="flex flex-col gap-3 border-t border-black/5 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-ink/58">
-              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-ember">
+              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-amber-700">
                 {post.author.name}
               </Link>{" "}
               · {formatDate(post.createdAt)}

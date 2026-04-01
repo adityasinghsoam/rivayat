@@ -65,18 +65,18 @@ export function PostDetail({ slug }: { slug: string }) {
   }
 
   return (
-    <article className="mx-auto flex max-w-4xl flex-col gap-6 px-1">
-      <header className="flex flex-col gap-5 rounded-[2rem] border border-black/5 bg-white/55 p-6 sm:p-8">
+    <article className="mx-auto mt-2 flex max-w-4xl flex-col gap-8 px-0 sm:mt-4">
+      <header className="mx-auto flex w-full max-w-4xl flex-col gap-5 rounded-[2rem] border border-neutral-200 bg-white/80 p-5 shadow-sm sm:p-8">
         <div className="flex flex-wrap gap-2">
-          <Badge>{post.language}</Badge>
+          <Badge className="bg-amber-100 text-amber-700">{post.language}</Badge>
           {post.tags.map((tag) => (
             <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-              <Badge className="bg-ink/5">#{tag}</Badge>
+              <Badge className="bg-neutral-100 text-neutral-700">#{tag}</Badge>
             </Link>
           ))}
         </div>
         <div className="space-y-4">
-          <h1 className="break-words font-display text-4xl leading-tight text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="break-words font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl lg:text-6xl">
             {post.title}
           </h1>
           <div className="border-b border-black/5 pb-5">
@@ -90,22 +90,24 @@ export function PostDetail({ slug }: { slug: string }) {
                   )}
                 </div>
                 <div>
-                  <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-ember">
+                  <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-amber-700">
                     {post.author.name}
                   </Link>
-                  <p className="text-sm text-ink/55">@{post.author.username} · {formatDate(post.createdAt)}</p>
+                  <p className="text-sm text-ink/55">
+                    @{post.author.username} · {formatDate(post.createdAt)}
+                  </p>
                 </div>
               </div>
               <FollowButton username={post.author.username} initialFollowing={post.author.isFollowing} />
             </div>
-            {post.author.bio ? <p className="mt-4 max-w-2xl text-sm leading-7 text-ink/70">{post.author.bio}</p> : null}
+            {post.author.bio ? <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-700">{post.author.bio}</p> : null}
           </div>
         </div>
       </header>
 
       <Card className="overflow-hidden p-0">
         <div
-          className="prose prose-stone prose-lg mx-auto max-w-3xl break-words px-6 py-10 text-[1.08rem] leading-10 text-ink/90 sm:px-10 sm:py-12 [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:bg-ember/5 [&_blockquote]:border-l-4 [&_blockquote]:border-ember [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
+          className="prose prose-stone prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-700 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-amber-700 [&_blockquote]:bg-amber-50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
         />
       </Card>
@@ -113,7 +115,7 @@ export function PostDetail({ slug }: { slug: string }) {
       <Card className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="flex flex-wrap items-center gap-4">
           <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
-          <p className="text-sm text-ink/60">{post.commentCount} comments</p>
+          <p className="text-sm text-neutral-600">{post.commentCount} comments</p>
         </div>
         <BookmarkButton postId={post.id} initialBookmarked={post.bookmarkedByMe} />
       </Card>

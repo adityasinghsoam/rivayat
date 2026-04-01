@@ -4,12 +4,14 @@ import { HomeFeed } from "@/components/home-feed";
 
 export default function HomePage() {
   return (
-    <div className="pb-8">
-      <section className="rounded-[2.75rem] border border-black/5 bg-white/65 px-8 py-12 text-center shadow-card backdrop-blur sm:px-12 sm:pb-16">
+    <div className="pb-10">
+      <section className="rounded-[2.75rem] border border-neutral-200 bg-white/72 px-4 py-12 text-center shadow-sm sm:px-8 sm:pb-16 sm:pt-14 md:px-12">
         <div className="mx-auto max-w-3xl space-y-5">
-          <Badge className="bg-ink text-parchment">Premium space for thoughtful writing</Badge>
-          <h1 className="font-display text-6xl leading-none tracking-tight text-ink sm:text-7xl">Rivayat</h1>
-          <p className="mx-auto max-w-2xl text-lg leading-8 text-ink/72 sm:text-xl">A home for poetry and stories</p>
+          <Badge className="bg-amber-100 text-amber-700">Premium space for thoughtful writing</Badge>
+          <h1 className="font-display text-5xl leading-none tracking-tight text-ink sm:text-6xl md:text-7xl">Rivayat</h1>
+          <p className="mx-auto max-w-2xl text-base leading-8 text-neutral-700 sm:text-lg md:text-xl">
+            A home for poetry and stories
+          </p>
         </div>
       </section>
 

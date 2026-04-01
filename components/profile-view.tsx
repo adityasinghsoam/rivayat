@@ -100,7 +100,7 @@ export function ProfileView({ username }: { username: string }) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <Card className="grid gap-8 p-8 sm:grid-cols-[auto_1fr] sm:items-start">
+      <Card className="grid gap-8 p-6 sm:grid-cols-[auto_1fr] sm:items-start sm:p-8">
         <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-ink/6 text-3xl font-semibold text-ink/55">
           {profile.avatarUrl ? (
             <img src={profile.avatarUrl} alt={profile.name} className="h-full w-full object-cover" />
@@ -110,14 +110,14 @@ export function ProfileView({ username }: { username: string }) {
         </div>
         <div className="space-y-4">
           <div className="space-y-1">
-            <h1 className="font-display text-5xl text-ink">{profile.name}</h1>
+            <h1 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{profile.name}</h1>
             <p className="text-sm text-ink/58">@{profile.username}</p>
           </div>
-          <div className="flex gap-6 text-sm text-ink/62">
+          <div className="flex gap-6 text-sm text-neutral-600">
             <p>{profile.followersCount} followers</p>
             <p>{profile.followingCount} following</p>
           </div>
-          <p className="max-w-2xl text-sm leading-8 text-ink/78">{profile.bio || "This user has not added a bio yet."}</p>
+          <p className="max-w-2xl text-sm leading-7 text-neutral-700">{profile.bio || "This user has not added a bio yet."}</p>
           <p className="text-sm text-ink/58">Joined {formatDate(profile.createdAt)}</p>
           <div className="flex gap-3">
             {isOwner ? (
@@ -139,11 +139,11 @@ export function ProfileView({ username }: { username: string }) {
         {profile.posts.length ? (
           <div className="space-y-4">
             {profile.posts.map((post) => (
-              <Card key={post.slug} className="space-y-2 p-7 transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_24px_60px_rgba(28,23,21,0.1)]">
-                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl text-ink">
+              <Card key={post.slug} className="space-y-3 p-6 transition-transform duration-200 hover:-translate-y-1 sm:p-7">
+                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-ink">
                   {post.title}
                 </Link>
-                <p className="text-sm leading-8 text-ink/75">{post.excerpt}</p>
+                <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
                 <p className="text-sm text-ink/58">{formatDate(post.createdAt)}</p>
               </Card>
             ))}

@@ -55,17 +55,17 @@ export function HeaderSearch() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search posts..."
-          className="rounded-full bg-white/88 shadow-sm"
+          className="rounded-full bg-white/92"
         />
       </form>
       {searched ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.65rem)] z-30 rounded-[1.75rem] border border-black/5 bg-white/96 p-4 shadow-card">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.65rem)] z-30 rounded-[1.75rem] border border-neutral-200 bg-white/96 p-4 shadow-md">
           {results.length ? (
             <div className="space-y-3">
               {results.map((post) => (
-                <Link key={post.slug} href={`/post/${post.slug}` as Route} className="block rounded-2xl p-3 transition hover:bg-ink/5">
-                  <p className="font-medium text-ink">{post.title}</p>
-                  <p className="mt-1 text-sm text-ink/70">{post.excerpt}</p>
+                <Link key={post.slug} href={`/post/${post.slug}` as Route} className="block rounded-2xl p-3 transition-all duration-200 hover:bg-neutral-50">
+                  <p className="font-semibold tracking-tight text-ink">{post.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-neutral-700">{post.excerpt}</p>
                   <p className="text-xs text-ink/55">
                     {post.author.name} · {formatDate(post.createdAt)}
                   </p>

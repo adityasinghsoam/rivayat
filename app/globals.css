@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  --page-bg: #f7f1e7;
+  --page-bg: #f8f5f0;
 }
 
 html {
@@ -21,20 +21,22 @@ select {
 
 body {
   min-height: 100vh;
-  background-image: radial-gradient(circle at top left, rgba(231, 169, 43, 0.12), transparent 24%),
-    radial-gradient(circle at 85% 10%, rgba(201, 91, 43, 0.08), transparent 20%),
-    linear-gradient(180deg, #fcf8f1 0%, #f3eadb 100%);
+  background-image: radial-gradient(circle at top left, rgba(217, 119, 6, 0.08), transparent 24%),
+    radial-gradient(circle at 85% 10%, rgba(120, 53, 15, 0.05), transparent 20%),
+    linear-gradient(180deg, #f8f5f0 0%, #f3efe7 100%);
   color: #1c1715;
   text-rendering: optimizeLegibility;
 }
 
 .prose blockquote {
-  border-left-color: #c95b2b;
+  border-left-color: #b45309;
+  color: #44403c;
 }
 
 .prose p {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.95;
 }
 
 .prose h1,
@@ -42,4 +44,24 @@ body {
 .prose h3 {
   font-family: Georgia, serif;
   letter-spacing: -0.02em;
+  color: #1c1917;
+}
+
+.prose h1,
+.prose h2 {
+  line-height: 1.15;
+}
+
+.prose ul,
+.prose ol {
+  color: #44403c;
+}
+
+.prose a {
+  color: #b45309;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  color: #92400e;
 }

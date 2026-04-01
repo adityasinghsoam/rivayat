@@ -8,7 +8,12 @@ export function Card({
   children: React.ReactNode;
 }) {
   return (
-    <div className={cn("rounded-[2rem] border border-black/5 bg-white/75 p-6 shadow-card backdrop-blur", className)}>
+    <div
+      className={cn(
+        "rounded-[2rem] border border-neutral-200 bg-white/88 p-6 shadow-sm backdrop-blur transition-shadow duration-300 hover:shadow-md",
+        className,
+      )}
+    >
       {children}
     </div>
   );

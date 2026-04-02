@@ -95,10 +95,7 @@ select {
 
 body {
   min-height: 100vh;
-  background-image:
-    radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.22), transparent 22%),
-    radial-gradient(circle at 80% 10%, rgba(244, 63, 94, 0.16), transparent 20%),
-    linear-gradient(135deg, #0f172a 0%, #1e293b 52%, #020617 100%);
+  background-image: linear-gradient(180deg, #0b0f19 0%, #111827 100%);
   color: #f8fafc;
   text-rendering: optimizeLegibility;
 }
@@ -108,7 +105,7 @@ body {
 }
 
 .prose blockquote {
-  border-left-color: #8b5cf6;
+  border-left-color: #6366f1;
   color: #e4e4e7;
 }
 
@@ -137,12 +134,12 @@ body {
 }
 
 .prose a {
-  color: #c4b5fd;
+  color: #818cf8;
   text-decoration: none;
 }
 
 .prose a:hover {
-  color: #f9a8d4;
+  color: #fbbf24;
 }
 
 @media (prefers-reduced-motion: reduce) {

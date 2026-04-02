@@ -83,7 +83,7 @@ export function NotificationBell() {
       <Button variant="ghost" className="group relative rounded-full px-3" onClick={toggleOpen}>
         <Bell size={18} className="transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110" />
         {unreadCount > 0 ? (
-          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gradient-to-r from-violet-500 to-rose-500 px-1 text-[10px] font-semibold text-white shadow-[0_0_18px_rgba(139,92,246,0.35)]">
+          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-500 px-1 text-[10px] font-semibold text-white">
             {unreadCount}
           </span>
         ) : null}
@@ -91,13 +91,13 @@ export function NotificationBell() {
       {open ? (
         <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-80 rounded-3xl border border-white/10 bg-slate-950/78 p-4 shadow-[0_24px_60px_rgba(2,6,23,0.58)] backdrop-blur-lg">
           <div className="space-y-3">
-            <p className="bg-gradient-to-r from-violet-400 to-rose-400 bg-clip-text text-sm font-semibold text-transparent">Notifications</p>
+            <p className="text-sm font-semibold text-white">Notifications</p>
             {notifications.length ? (
               notifications.map((notification) => (
                 <Link
                   key={notification.id}
                   href={notificationHref(notification)}
-                  className="block rounded-2xl border border-transparent p-3 transition-all duration-200 hover:border-violet-400/40 hover:bg-white/6"
+                  className="block rounded-2xl border border-transparent p-3 transition-all duration-200 hover:border-indigo-400/30 hover:bg-white/6"
                   onClick={() => setOpen(false)}
                 >
                   <p className="text-sm text-neutral-200">{notificationLabel(notification)}</p>

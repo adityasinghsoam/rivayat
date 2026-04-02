@@ -131,7 +131,7 @@ export function HomeFeed() {
   }
 
   if (error) {
-    return <p className="text-sm text-rose-300">{error}</p>;
+    return <p className="text-sm text-neutral-300">{error}</p>;
   }
 
   if (!posts.length) {
@@ -148,11 +148,11 @@ export function HomeFeed() {
       {posts.map((post, index) => (
         <Card
           key={post.slug}
-          className="animate-stagger-in flex min-w-0 flex-col gap-4 border-white/10 bg-white/5 p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:border-violet-400/70 hover:shadow-[0_24px_60px_rgba(139,92,246,0.24)] sm:p-7"
+          className="animate-stagger-in flex min-w-0 flex-col gap-4 border-white/10 bg-white/5 p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:border-indigo-400/40 hover:shadow-lg sm:p-7"
           style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 600)}ms` } as React.CSSProperties}
         >
           <Link href={`/post/${post.slug}`} className="block min-w-0">
-            <h2 className="mb-3 break-words bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-[1.8rem] font-semibold leading-tight tracking-tight text-transparent sm:text-[2.2rem]">
+            <h2 className="mb-3 break-words font-display text-[1.8rem] font-semibold leading-tight tracking-tight text-white sm:text-[2.2rem]">
               {post.title}
             </h2>
             <p className="max-w-3xl break-words text-[15px] leading-7 text-neutral-300">{post.excerpt}</p>
@@ -161,7 +161,7 @@ export function HomeFeed() {
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-                <Badge className="border-violet-400/20 bg-violet-500/10 text-violet-200 transition hover:border-rose-400/30 hover:bg-rose-500/10 hover:text-rose-200">
+                <Badge className="border-white/10 bg-white/6 text-neutral-300 transition hover:border-indigo-400/25 hover:bg-white/8 hover:text-white">
                   #{tag}
                 </Badge>
               </Link>
@@ -170,7 +170,7 @@ export function HomeFeed() {
 
           <div className="flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-neutral-400">
-              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-200 transition hover:text-violet-300">
+              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-200 transition hover:text-indigo-300">
                 {post.author.name}
               </Link>{" · "}
               {formatDate(post.createdAt)}

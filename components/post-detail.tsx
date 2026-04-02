@@ -67,9 +67,8 @@ export function PostDetail({ slug }: { slug: string }) {
   return (
     <article className="mx-auto mt-2 flex max-w-4xl flex-col gap-8 px-0 sm:mt-4">
       <header className="animate-rise-in relative mx-auto flex w-full max-w-4xl flex-col gap-5 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(2,6,23,0.4)] backdrop-blur-md sm:p-8">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,rgba(139,92,246,0.22),transparent_60%)]" />
         <div className="relative flex flex-wrap gap-2">
-          <Badge className="border-violet-400/30 bg-violet-500/12 text-violet-200">{post.language}</Badge>
+          <Badge className="border-white/10 bg-white/6 text-neutral-300">{post.language}</Badge>
           {post.tags.map((tag) => (
             <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
               <Badge className="border-white/10 bg-white/6 text-neutral-200">#{tag}</Badge>
@@ -77,7 +76,7 @@ export function PostDetail({ slug }: { slug: string }) {
           ))}
         </div>
         <div className="relative space-y-4">
-          <h1 className="animate-rise-in break-words bg-gradient-to-r from-white via-violet-200 to-rose-300 bg-clip-text font-display text-4xl font-semibold leading-tight tracking-tight text-transparent [animation-delay:120ms] sm:text-5xl lg:text-6xl">
+          <h1 className="animate-rise-in break-words font-display text-4xl font-semibold leading-tight tracking-tight text-white [animation-delay:120ms] sm:text-5xl lg:text-6xl">
             {post.title}
           </h1>
           <div className="animate-rise-in border-b border-white/10 pb-5 [animation-delay:200ms]">
@@ -91,7 +90,7 @@ export function PostDetail({ slug }: { slug: string }) {
                   )}
                 </div>
                 <div>
-                  <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-white transition hover:text-violet-300">
+                  <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-white transition hover:text-indigo-300">
                     {post.author.name}
                   </Link>
                   <p className="text-sm text-neutral-400">
@@ -108,7 +107,7 @@ export function PostDetail({ slug }: { slug: string }) {
 
       <Card className="animate-rise-in overflow-hidden p-0 [animation-delay:280ms]">
         <div
-          className="reading-reveal prose prose-invert prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-300 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-violet-400 [&_blockquote]:bg-violet-500/10 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
+          className="reading-reveal prose prose-invert prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-300 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-400 [&_blockquote]:bg-white/6 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
         />
       </Card>

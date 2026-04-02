@@ -101,7 +101,6 @@ export function ProfileView({ username }: { username: string }) {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <Card className="animate-rise-in relative grid gap-8 overflow-hidden p-6 sm:grid-cols-[auto_1fr] sm:items-start sm:p-8">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,rgba(139,92,246,0.22),transparent_60%)]" />
         <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/8 text-3xl font-semibold text-neutral-300">
           {profile.avatarUrl ? (
             <img src={profile.avatarUrl} alt={profile.name} className="h-full w-full object-cover" />
@@ -111,9 +110,7 @@ export function ProfileView({ username }: { username: string }) {
         </div>
         <div className="relative space-y-4">
           <div className="space-y-1">
-            <h1 className="bg-gradient-to-r from-white via-violet-200 to-rose-300 bg-clip-text font-display text-4xl font-semibold tracking-tight text-transparent sm:text-5xl">
-              {profile.name}
-            </h1>
+            <h1 className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">{profile.name}</h1>
             <p className="text-sm text-neutral-400">@{profile.username}</p>
           </div>
           <div className="flex gap-6 text-sm text-neutral-300">
@@ -133,21 +130,21 @@ export function ProfileView({ username }: { username: string }) {
               </Button>
             )}
           </div>
-          {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+          {error ? <p className="text-sm text-neutral-300">{error}</p> : null}
         </div>
       </Card>
 
       <section className="space-y-4">
-        <h2 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-3xl text-transparent">Posts</h2>
+        <h2 className="font-display text-3xl text-white">Posts</h2>
         {profile.posts.length ? (
           <div className="space-y-4">
             {profile.posts.map((post, index) => (
               <Card
                 key={post.slug}
-                className="animate-stagger-in space-y-3 p-6 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-violet-400/70 hover:shadow-[0_24px_60px_rgba(139,92,246,0.24)] sm:p-7"
+                className="animate-stagger-in space-y-3 p-6 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-indigo-400/40 hover:shadow-lg sm:p-7"
                 style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 500)}ms` } as React.CSSProperties}
               >
-                <Link href={`/post/${post.slug}` as Route} className="block bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-2xl font-semibold tracking-tight text-transparent">
+                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-white">
                   {post.title}
                 </Link>
                 <p className="text-sm leading-7 text-neutral-300">{post.excerpt}</p>

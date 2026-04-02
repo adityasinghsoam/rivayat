@@ -25,14 +25,14 @@ export function SiteHeader() {
   return (
     <header
       className={`sticky top-0 z-30 border-b border-white/10 backdrop-blur-lg transition-all duration-300 ${
-        scrolled ? "bg-white/8 shadow-[0_12px_40px_rgba(2,6,23,0.36)]" : "bg-white/5"
+        scrolled ? "bg-white/8 shadow-[0_10px_30px_rgba(2,6,23,0.24)]" : "bg-white/5"
       }`}
     >
       <ScrollProgress />
       <div className="mx-auto grid max-w-6xl items-center gap-4 px-4 py-4 sm:grid-cols-[auto_minmax(320px,1fr)_auto] sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="justify-self-start bg-gradient-to-r from-violet-400 to-rose-400 bg-clip-text font-display text-3xl italic tracking-tight text-transparent transition-all duration-200 hover:scale-[1.02]"
+          className="justify-self-start font-display text-3xl italic tracking-tight text-white transition-all duration-200 hover:scale-[1.02]"
         >
           Rivayat
         </Link>

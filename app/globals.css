@@ -11,6 +11,94 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes rivayat-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rivayat-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-rise-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: rivayat-fade-up 520ms ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.animate-stagger-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: rivayat-fade-up 520ms ease-out forwards;
+  animation-delay: var(--stagger-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.animate-route-in {
+  animation: rivayat-fade 280ms ease-out;
+}
+
+.reading-reveal > * {
+  opacity: 0;
+  transform: translateY(16px);
+  animation: rivayat-fade-up 520ms ease-out forwards;
+}
+
+.reading-reveal > *:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.reading-reveal > *:nth-child(2) {
+  animation-delay: 140ms;
+}
+
+.reading-reveal > *:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+.reading-reveal > *:nth-child(4) {
+  animation-delay: 260ms;
+}
+
+.reading-reveal > *:nth-child(5) {
+  animation-delay: 320ms;
+}
+
+.reading-reveal > *:nth-child(6) {
+  animation-delay: 380ms;
+}
+
+.reading-reveal > *:nth-child(n + 7) {
+  animation-delay: 440ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-rise-in,
+  .animate-stagger-in,
+  .animate-route-in,
+  .reading-reveal > * {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
 body,
 input,
 textarea,

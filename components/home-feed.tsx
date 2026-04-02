@@ -145,8 +145,12 @@ export function HomeFeed() {
 
   return (
     <div className="space-y-5">
-      {posts.map((post) => (
-        <Card key={post.slug} className="flex min-w-0 flex-col gap-4 border-neutral-200 p-6 transition-transform duration-200 hover:-translate-y-1 sm:p-7">
+      {posts.map((post, index) => (
+        <Card
+          key={post.slug}
+          className="animate-stagger-in flex min-w-0 flex-col gap-4 border-neutral-200 p-6 transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:shadow-md sm:p-7"
+          style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 80, 480)}ms` } as React.CSSProperties}
+        >
           <Link href={`/post/${post.slug}`} className="block min-w-0">
             <h2 className="mb-3 break-words font-display text-[1.7rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2.1rem]">
               {post.title}
@@ -166,8 +170,8 @@ export function HomeFeed() {
             <p className="text-sm text-ink/58">
               <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-amber-700">
                 {post.author.name}
-              </Link>{" "}
-              · {formatDate(post.createdAt)}
+              </Link>{" · "}
+              {formatDate(post.createdAt)}
             </p>
             <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
           </div>

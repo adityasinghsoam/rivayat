@@ -66,7 +66,7 @@ export function PostDetail({ slug }: { slug: string }) {
 
   return (
     <article className="mx-auto mt-2 flex max-w-4xl flex-col gap-8 px-0 sm:mt-4">
-      <header className="mx-auto flex w-full max-w-4xl flex-col gap-5 rounded-[2rem] border border-neutral-200 bg-white/80 p-5 shadow-sm sm:p-8">
+      <header className="animate-rise-in mx-auto flex w-full max-w-4xl flex-col gap-5 rounded-[2rem] border border-neutral-200 bg-white/80 p-5 shadow-sm sm:p-8">
         <div className="flex flex-wrap gap-2">
           <Badge className="bg-amber-100 text-amber-700">{post.language}</Badge>
           {post.tags.map((tag) => (
@@ -76,10 +76,10 @@ export function PostDetail({ slug }: { slug: string }) {
           ))}
         </div>
         <div className="space-y-4">
-          <h1 className="break-words font-display text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="animate-rise-in break-words font-display text-3xl font-semibold leading-tight tracking-tight text-ink [animation-delay:120ms] sm:text-5xl lg:text-6xl">
             {post.title}
           </h1>
-          <div className="border-b border-black/5 pb-5">
+          <div className="animate-rise-in border-b border-black/5 pb-5 [animation-delay:200ms]">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-ink/6 text-lg font-semibold text-ink/60">
@@ -94,7 +94,7 @@ export function PostDetail({ slug }: { slug: string }) {
                     {post.author.name}
                   </Link>
                   <p className="text-sm text-ink/55">
-                    @{post.author.username} · {formatDate(post.createdAt)}
+                    @{post.author.username} {" · "} {formatDate(post.createdAt)}
                   </p>
                 </div>
               </div>
@@ -105,14 +105,14 @@ export function PostDetail({ slug }: { slug: string }) {
         </div>
       </header>
 
-      <Card className="overflow-hidden p-0">
+      <Card className="animate-rise-in overflow-hidden p-0 [animation-delay:280ms]">
         <div
-          className="prose prose-stone prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-700 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-amber-700 [&_blockquote]:bg-amber-50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
+          className="reading-reveal prose prose-stone prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-700 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-amber-700 [&_blockquote]:bg-amber-50 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
         />
       </Card>
 
-      <Card className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <Card className="animate-rise-in flex flex-col gap-4 p-5 [animation-delay:360ms] sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="flex flex-wrap items-center gap-4">
           <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
           <p className="text-sm text-neutral-600">{post.commentCount} comments</p>

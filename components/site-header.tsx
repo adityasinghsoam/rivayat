@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { HeaderSearch } from "@/components/header-search";
 import { AuthNav } from "@/components/auth-nav";
+import { ScrollProgress } from "@/components/scroll-progress";
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,12 +22,13 @@ export function SiteHeader() {
     };
   }, []);
 
-  return (
+    return (
     <header
-      className={`sticky top-0 border-b border-black/5 bg-[rgba(248,245,240,0.88)] backdrop-blur-xl transition-shadow duration-200 ${
-        scrolled ? "shadow-sm" : ""
+      className={`sticky top-0 z-30 border-b border-black/5 backdrop-blur-xl transition-all duration-300 ${
+        scrolled ? "bg-[rgba(255,255,255,0.74)] shadow-sm" : "bg-[rgba(248,245,240,0.7)]"
       }`}
     >
+      <ScrollProgress />
       <div className="mx-auto grid max-w-6xl items-center gap-4 px-4 py-4 sm:grid-cols-[auto_minmax(320px,1fr)_auto] sm:px-6 lg:px-8">
         <Link href="/" className="justify-self-start font-display text-3xl italic tracking-tight text-ink transition-colors hover:text-amber-700">
           Rivayat

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, requireUser } from "@/lib/auth";
-import { makeExcerpt, makeSlug } from "@/lib/utils";
+import { getReadTimeMinutes, makeExcerpt, makeSlug } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
 export async function GET(
@@ -21,6 +21,8 @@ export async function GET(
       createdAt: true,
       tags: true,
       language: true,
+      views: true,
+      isPublished: true,
       _count: {
         select: {
           likes: true,
@@ -63,14 +65,75 @@ export async function GET(
     return NextResponse.json({ error: "Post not found." }, { status: 404 });
   }
 
+  if (!post.isPublished && user?.id !== post.author.id) {
+    return NextResponse.json({ error: "Post not found." }, { status: 404 });
+  }
+
+  const updatedPost =
+    post.isPublished
+      ? await prisma.post.update({
+          where: { id: post.id },
+          data: {
+            views: {
+              increment: 1,
+            },
+          },
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            createdAt: true,
+            tags: true,
+            language: true,
+            views: true,
+            isPublished: true,
+            _count: {
+              select: {
+                likes: true,
+                comments: true,
+              },
+            },
+            likes: user
+              ? {
+                  where: {
+                    userId: user.id,
+                  },
+                  select: {
+                    id: true,
+                  },
+                }
+              : false,
+            bookmarks: user
+              ? {
+                  where: {
+                    userId: user.id,
+                  },
+                  select: {
+                    id: true,
+                  },
+                }
+              : false,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                username: true,
+                bio: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        })
+      : post;
+
   let isFollowingAuthor = false;
 
-  if (user && user.id !== post.author.id) {
+  if (user && user.id !== updatedPost.author.id) {
     const follow = await prisma.follow.findUnique({
       where: {
         followerId_followingId: {
           followerId: user.id,
-          followingId: post.author.id,
+          followingId: updatedPost.author.id,
         },
       },
       select: {
@@ -84,17 +147,20 @@ export async function GET(
   return NextResponse.json({
     post: {
       id: post.id,
-      title: post.title,
-      content: post.content,
-      createdAt: post.createdAt,
-      tags: post.tags,
-      language: post.language,
-      likeCount: post._count.likes,
-      commentCount: post._count.comments,
-      likedByMe: Array.isArray(post.likes) ? post.likes.length > 0 : false,
-      bookmarkedByMe: Array.isArray(post.bookmarks) ? post.bookmarks.length > 0 : false,
+      title: updatedPost.title,
+      content: updatedPost.content,
+      createdAt: updatedPost.createdAt,
+      tags: updatedPost.tags,
+      language: updatedPost.language,
+      views: updatedPost.views,
+      readTime: getReadTimeMinutes(updatedPost.content),
+      isPublished: updatedPost.isPublished,
+      likeCount: updatedPost._count.likes,
+      commentCount: updatedPost._count.comments,
+      likedByMe: Array.isArray(updatedPost.likes) ? updatedPost.likes.length > 0 : false,
+      bookmarkedByMe: Array.isArray(updatedPost.bookmarks) ? updatedPost.bookmarks.length > 0 : false,
       author: {
-        ...post.author,
+        ...updatedPost.author,
         isFollowing: isFollowingAuthor,
       },
     },
@@ -102,6 +168,13 @@ export async function GET(
 }
 
 export async function PUT(
+  request: Request,
+  context: { params: Promise<{ postId: string }> },
+) {
+  return PATCH(request, context);
+}
+
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ postId: string }> },
 ) {
@@ -131,6 +204,7 @@ export async function PUT(
         excerpt: makeExcerpt(data.content),
         tags: data.tags,
         language: data.language,
+        isPublished: data.isPublished ?? existing.isPublished,
       },
     });
 

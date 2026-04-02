@@ -20,6 +20,9 @@ type PostDetailData = {
   createdAt: string;
   tags: string[];
   language: "ENGLISH" | "HINDI";
+  views: number;
+  readTime: number;
+  isPublished: boolean;
   likeCount: number;
   commentCount: number;
   likedByMe: boolean;
@@ -94,13 +97,14 @@ export function PostDetail({ slug }: { slug: string }) {
                     {post.author.name}
                   </Link>
                   <p className="text-sm text-neutral-400">
-                    @{post.author.username} {" · "} {formatDate(post.createdAt)}
+                    @{post.author.username} {" · "} {formatDate(post.createdAt)} {" · "} {post.readTime} min read {" · "} {post.views} views
                   </p>
                 </div>
               </div>
               <FollowButton username={post.author.username} initialFollowing={post.author.isFollowing} />
             </div>
             {post.author.bio ? <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-300">{post.author.bio}</p> : null}
+            {!post.isPublished ? <p className="mt-3 text-xs uppercase tracking-[0.2em] text-neutral-400">Draft preview</p> : null}
           </div>
         </div>
       </header>

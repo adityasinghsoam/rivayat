@@ -19,6 +19,12 @@ export function makeExcerpt(content: string) {
   return plain.slice(0, 180) + (plain.length > 180 ? "..." : "");
 }
 
+export function getReadTimeMinutes(content: string) {
+  const plain = stripHtml(content);
+  const words = plain ? plain.split(/\s+/).filter(Boolean).length : 0;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
 export function formatDate(date: Date | string) {
   return new Intl.DateTimeFormat("en-IN", {
     dateStyle: "medium",

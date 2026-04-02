@@ -24,6 +24,7 @@ export const postSchema = z.object({
   excerpt: z.string().trim().max(180, "Excerpt must be 180 characters or fewer.").optional(),
   tags: z.array(z.string().min(1).max(24)).max(6),
   language: z.enum(["ENGLISH", "HINDI"]),
+  isPublished: z.boolean().optional(),
 });
 
 export const commentSchema = z.object({

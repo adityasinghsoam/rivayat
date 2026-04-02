@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, requireUser } from "@/lib/auth";
 import { logAction } from "@/lib/action-log";
-import { makeExcerpt, makeSlug } from "@/lib/utils";
+import { getReadTimeMinutes, makeExcerpt, makeSlug } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
@@ -16,6 +16,10 @@ export async function GET(request: NextRequest) {
   let personalized = false;
   let emptyStateMessage: string | null = null;
   let whereClause: Record<string, unknown> = {};
+
+  whereClause = {
+    isPublished: true,
+  };
 
   if (user) {
     personalized = true;
@@ -41,6 +45,7 @@ export async function GET(request: NextRequest) {
     }
 
     whereClause = {
+      ...whereClause,
       authorId: {
         in: followingIds,
       },
@@ -120,9 +125,11 @@ export async function GET(request: NextRequest) {
       id: true,
       title: true,
       excerpt: true,
+      content: true,
       createdAt: true,
       slug: true,
       tags: true,
+      views: true,
       _count: {
         select: {
           likes: true,
@@ -169,6 +176,8 @@ export async function GET(request: NextRequest) {
       createdAt: post.createdAt,
       slug: post.slug,
       tags: post.tags,
+      views: post.views,
+      readTime: getReadTimeMinutes(post.content),
       likeCount: post._count.likes,
       likedByMe: Array.isArray(post.likes) ? post.likes.length > 0 : false,
       author: post.author,
@@ -203,11 +212,12 @@ export async function POST(request: Request) {
         excerpt: data.excerpt?.trim() || makeExcerpt(data.content),
         tags: data.tags,
         language: data.language,
+        isPublished: data.isPublished ?? false,
         authorId: user.id,
       },
     });
 
-    logAction("post_created", {
+    logAction(data.isPublished ? "post_created" : "draft_saved", {
       userId: user.id,
       postId: post.id,
     });

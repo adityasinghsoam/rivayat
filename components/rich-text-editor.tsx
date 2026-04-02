@@ -13,12 +13,7 @@ export function RichTextEditor({
   onChange: (value: string) => void;
 }) {
   const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
-        bulletList: false,
-        orderedList: false,
-      }),
-    ],
+    extensions: [StarterKit],
     content: value || "<p></p>",
     immediatelyRender: false,
     editorProps: {
@@ -39,37 +34,29 @@ export function RichTextEditor({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
-        <Button variant="ghost" className={cn(editor.isActive("bold") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleBold().run()}>
+        <Button variant="ghost" className={cn(editor.isActive("bold") && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleBold().run()}>
           Bold
         </Button>
-        <Button variant="ghost" className={cn(editor.isActive("italic") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleItalic().run()}>
+        <Button variant="ghost" className={cn(editor.isActive("italic") && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleItalic().run()}>
           Italic
         </Button>
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("heading", { level: 1 }) && "border border-violet-400/40 bg-violet-500/10")}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("heading", { level: 1 }) && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
           H1
         </Button>
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("heading", { level: 2 }) && "border border-violet-400/40 bg-violet-500/10")}
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("heading", { level: 2 }) && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
           H2
         </Button>
-        <Button variant="ghost" className={cn(editor.isActive("paragraph") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().setParagraph().run()}>
-          Paragraph
+        <Button variant="ghost" className={cn(editor.isActive("bulletList") && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleBulletList().run()}>
+          Bullets
         </Button>
-        <Button variant="ghost" className={cn(editor.isActive("blockquote") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+        <Button variant="ghost" className={cn(editor.isActive("orderedList") && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+          Numbers
+        </Button>
+        <Button variant="ghost" className={cn(editor.isActive("blockquote") && "border border-indigo-400/35 bg-white/8")} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
           Quote
         </Button>
-        <Button variant="ghost" onClick={() => editor.chain().focus().setHardBreak().run()}>
-          Line break
-        </Button>
       </div>
-      <p className="text-xs text-neutral-400">Use Enter for a new paragraph and Line break for poetry-style line spacing.</p>
+      <p className="text-xs text-neutral-400">Use Enter for a new paragraph. Lists and quotes are supported in published posts and drafts.</p>
       <EditorContent editor={editor} />
     </div>
   );

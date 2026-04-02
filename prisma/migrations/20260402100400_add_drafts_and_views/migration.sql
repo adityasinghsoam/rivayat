@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Post" ADD COLUMN     "isPublished" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "views" INTEGER NOT NULL DEFAULT 0;

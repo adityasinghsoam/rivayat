@@ -17,6 +17,8 @@ type FeedPost = {
   createdAt: string;
   slug: string;
   tags: string[];
+  views: number;
+  readTime: number;
   likeCount: number;
   likedByMe: boolean;
   author: {
@@ -173,7 +175,7 @@ export function HomeFeed() {
               <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-200 transition hover:text-indigo-300">
                 {post.author.name}
               </Link>{" · "}
-              {formatDate(post.createdAt)}
+              {formatDate(post.createdAt)} · {post.readTime} min read · {post.views} views
             </p>
             <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
           </div>

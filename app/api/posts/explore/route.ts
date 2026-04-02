@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { getReadTimeMinutes } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,7 +12,9 @@ export async function GET(request: NextRequest) {
     const limitParam = Number(request.nextUrl.searchParams.get("limit") || "10");
     const limit = Number.isFinite(limitParam) ? Math.min(Math.max(limitParam, 1), 20) : 10;
 
-    let whereClause: Record<string, unknown> = {};
+    let whereClause: Record<string, unknown> = {
+      isPublished: true,
+    };
 
     if (tag) {
       whereClause = {
@@ -84,9 +87,11 @@ export async function GET(request: NextRequest) {
         id: true,
         title: true,
         excerpt: true,
+        content: true,
         createdAt: true,
         slug: true,
         tags: true,
+        views: true,
         _count: {
           select: {
             likes: true,
@@ -126,6 +131,8 @@ export async function GET(request: NextRequest) {
         createdAt: post.createdAt,
         slug: post.slug,
         tags: post.tags,
+        views: post.views,
+        readTime: getReadTimeMinutes(post.content),
         likeCount: post._count.likes,
         likedByMe: Array.isArray(post.likes) ? post.likes.length > 0 : false,
         author: post.author,

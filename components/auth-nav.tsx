@@ -47,6 +47,9 @@ export function AuthNav() {
       <Link href="/write" className={navLinkClass}>
         Write
       </Link>
+      <Link href={"/drafts" as Route} className={navLinkClass}>
+        Drafts
+      </Link>
       <NotificationBell />
       <Link href={`/profile/${user.username}` as Route} className={navLinkClass}>
         Profile

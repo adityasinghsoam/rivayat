@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const posts = await prisma.post.findMany({
     take: 10,
     where: {
+      isPublished: true,
       OR: [
         {
           title: {

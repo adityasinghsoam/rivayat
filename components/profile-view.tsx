@@ -49,15 +49,15 @@ export function ProfileView({ username }: { username: string }) {
   }, [username]);
 
   if (loading) {
-    return <p className="text-sm text-ink/60">Loading profile...</p>;
+    return <p className="text-sm text-neutral-400">Loading profile...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-ink/60">{error === "User not found." ? "User not found" : error}</p>;
+    return <p className="text-sm text-neutral-300">{error === "User not found." ? "User not found" : error}</p>;
   }
 
   if (!profile) {
-    return <p className="text-sm text-ink/60">User not found</p>;
+    return <p className="text-sm text-neutral-300">User not found</p>;
   }
 
   const isOwner = user?.username === profile.username;
@@ -100,57 +100,64 @@ export function ProfileView({ username }: { username: string }) {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <Card className="grid gap-8 p-6 sm:grid-cols-[auto_1fr] sm:items-start sm:p-8">
-        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-ink/6 text-3xl font-semibold text-ink/55">
+      <Card className="animate-rise-in relative grid gap-8 overflow-hidden p-6 sm:grid-cols-[auto_1fr] sm:items-start sm:p-8">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[radial-gradient(circle_at_top,rgba(139,92,246,0.22),transparent_60%)]" />
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/8 text-3xl font-semibold text-neutral-300">
           {profile.avatarUrl ? (
             <img src={profile.avatarUrl} alt={profile.name} className="h-full w-full object-cover" />
           ) : (
             profile.name.charAt(0).toUpperCase()
           )}
         </div>
-        <div className="space-y-4">
+        <div className="relative space-y-4">
           <div className="space-y-1">
-            <h1 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{profile.name}</h1>
-            <p className="text-sm text-ink/58">@{profile.username}</p>
+            <h1 className="bg-gradient-to-r from-white via-violet-200 to-rose-300 bg-clip-text font-display text-4xl font-semibold tracking-tight text-transparent sm:text-5xl">
+              {profile.name}
+            </h1>
+            <p className="text-sm text-neutral-400">@{profile.username}</p>
           </div>
-          <div className="flex gap-6 text-sm text-neutral-600">
+          <div className="flex gap-6 text-sm text-neutral-300">
             <p>{profile.followersCount} followers</p>
             <p>{profile.followingCount} following</p>
           </div>
-          <p className="max-w-2xl text-sm leading-7 text-neutral-700">{profile.bio || "This user has not added a bio yet."}</p>
-          <p className="text-sm text-ink/58">Joined {formatDate(profile.createdAt)}</p>
+          <p className="max-w-2xl text-sm leading-7 text-neutral-300">{profile.bio || "This user has not added a bio yet."}</p>
+          <p className="text-sm text-neutral-400">Joined {formatDate(profile.createdAt)}</p>
           <div className="flex gap-3">
             {isOwner ? (
               <Link href="/profile/edit">
                 <Button variant="secondary">Edit Profile</Button>
               </Link>
             ) : (
-              <Button variant={profile.isFollowing ? "ghost" : "secondary"} onClick={toggleFollow} disabled={followBusy}>
+              <Button variant={profile.isFollowing ? "ghost" : "primary"} onClick={toggleFollow} disabled={followBusy}>
                 {followBusy ? "Updating..." : profile.isFollowing ? "Unfollow" : "Follow"}
               </Button>
             )}
           </div>
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? <p className="text-sm text-rose-300">{error}</p> : null}
         </div>
       </Card>
 
       <section className="space-y-4">
-        <h2 className="font-display text-3xl text-ink">Posts</h2>
+        <h2 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-3xl text-transparent">Posts</h2>
         {profile.posts.length ? (
           <div className="space-y-4">
-            {profile.posts.map((post) => (
-              <Card key={post.slug} className="space-y-3 p-6 transition-transform duration-200 hover:-translate-y-1 sm:p-7">
-                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-ink">
+            {profile.posts.map((post, index) => (
+              <Card
+                key={post.slug}
+                className="animate-stagger-in space-y-3 p-6 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-violet-400/70 hover:shadow-[0_24px_60px_rgba(139,92,246,0.24)] sm:p-7"
+                style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 500)}ms` } as React.CSSProperties}
+              >
+                <Link href={`/post/${post.slug}` as Route} className="block bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-2xl font-semibold tracking-tight text-transparent">
                   {post.title}
                 </Link>
-                <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
-                <p className="text-sm text-ink/58">{formatDate(post.createdAt)}</p>
+                <p className="text-sm leading-7 text-neutral-300">{post.excerpt}</p>
+                <p className="text-sm text-neutral-400">{formatDate(post.createdAt)}</p>
               </Card>
             ))}
           </div>
         ) : (
           <Card className="p-8 text-center">
-            <p className="text-sm text-ink/60">No posts available.</p>
+            <p className="text-sm text-neutral-400">No posts available.</p>
           </Card>
         )}
       </section>

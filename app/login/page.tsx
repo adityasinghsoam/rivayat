@@ -5,10 +5,10 @@ export default function LoginPage() {
   return (
     <div className="space-y-6 py-10">
       <div className="space-y-2 text-center">
-        <h1 className="font-display text-5xl text-ink">Welcome back</h1>
-        <p className="text-ink/70">
+        <h1 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-5xl text-transparent">Welcome back</h1>
+        <p className="text-neutral-300">
           Log in to continue writing and responding. Need an account?{" "}
-          <Link href="/signup" className="text-ember">
+          <Link href="/signup" className="text-violet-300 transition hover:text-rose-300">
             Sign up
           </Link>
         </p>

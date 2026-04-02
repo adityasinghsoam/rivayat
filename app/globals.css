@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  --page-bg: #f8f5f0;
+  color-scheme: dark;
 }
 
 html {
@@ -14,74 +13,136 @@ html {
 @keyframes rivayat-fade-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-@keyframes rivayat-fade {
+@keyframes rivayat-fade-scale {
   from {
     opacity: 0;
+    transform: scale(0.985);
   }
   to {
     opacity: 1;
+    transform: scale(1);
   }
 }
 
 .animate-rise-in {
   opacity: 0;
-  transform: translateY(20px);
-  animation: rivayat-fade-up 520ms ease-out forwards;
+  transform: translateY(30px) scale(0.98);
+  animation: rivayat-fade-up 560ms ease-out forwards;
   will-change: opacity, transform;
 }
 
 .animate-stagger-in {
   opacity: 0;
-  transform: translateY(20px);
-  animation: rivayat-fade-up 520ms ease-out forwards;
+  transform: translateY(30px) scale(0.98);
+  animation: rivayat-fade-up 560ms ease-out forwards;
   animation-delay: var(--stagger-delay, 0ms);
   will-change: opacity, transform;
 }
 
 .animate-route-in {
-  animation: rivayat-fade 280ms ease-out;
+  animation: rivayat-fade-scale 340ms ease-out;
 }
 
 .reading-reveal > * {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(20px);
   animation: rivayat-fade-up 520ms ease-out forwards;
 }
 
 .reading-reveal > *:nth-child(1) {
-  animation-delay: 80ms;
+  animation-delay: 90ms;
 }
 
 .reading-reveal > *:nth-child(2) {
-  animation-delay: 140ms;
+  animation-delay: 170ms;
 }
 
 .reading-reveal > *:nth-child(3) {
-  animation-delay: 200ms;
+  animation-delay: 250ms;
 }
 
 .reading-reveal > *:nth-child(4) {
-  animation-delay: 260ms;
+  animation-delay: 330ms;
 }
 
 .reading-reveal > *:nth-child(5) {
-  animation-delay: 320ms;
+  animation-delay: 410ms;
 }
 
 .reading-reveal > *:nth-child(6) {
-  animation-delay: 380ms;
+  animation-delay: 490ms;
 }
 
 .reading-reveal > *:nth-child(n + 7) {
-  animation-delay: 440ms;
+  animation-delay: 560ms;
+}
+
+body,
+input,
+textarea,
+button,
+select {
+  font-feature-settings: "liga" 1, "kern" 1;
+}
+
+body {
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(139, 92, 246, 0.22), transparent 22%),
+    radial-gradient(circle at 80% 10%, rgba(244, 63, 94, 0.16), transparent 20%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 52%, #020617 100%);
+  color: #f8fafc;
+  text-rendering: optimizeLegibility;
+}
+
+.prose {
+  color: #d4d4d8;
+}
+
+.prose blockquote {
+  border-left-color: #8b5cf6;
+  color: #e4e4e7;
+}
+
+.prose p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.95;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  font-family: Georgia, serif;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.prose h1,
+.prose h2 {
+  line-height: 1.12;
+}
+
+.prose ul,
+.prose ol {
+  color: #d4d4d8;
+}
+
+.prose a {
+  color: #c4b5fd;
+  text-decoration: none;
+}
+
+.prose a:hover {
+  color: #f9a8d4;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -97,59 +158,4 @@ html {
     transform: none;
     animation: none;
   }
-}
-
-body,
-input,
-textarea,
-button,
-select {
-  font-feature-settings: "liga" 1, "kern" 1;
-}
-
-body {
-  min-height: 100vh;
-  background-image: radial-gradient(circle at top left, rgba(217, 119, 6, 0.08), transparent 24%),
-    radial-gradient(circle at 85% 10%, rgba(120, 53, 15, 0.05), transparent 20%),
-    linear-gradient(180deg, #f8f5f0 0%, #f3efe7 100%);
-  color: #1c1715;
-  text-rendering: optimizeLegibility;
-}
-
-.prose blockquote {
-  border-left-color: #b45309;
-  color: #44403c;
-}
-
-.prose p {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-  line-height: 1.95;
-}
-
-.prose h1,
-.prose h2,
-.prose h3 {
-  font-family: Georgia, serif;
-  letter-spacing: -0.02em;
-  color: #1c1917;
-}
-
-.prose h1,
-.prose h2 {
-  line-height: 1.15;
-}
-
-.prose ul,
-.prose ol {
-  color: #44403c;
-}
-
-.prose a {
-  color: #b45309;
-  text-decoration: none;
-}
-
-.prose a:hover {
-  color: #92400e;
 }

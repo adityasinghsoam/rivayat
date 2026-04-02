@@ -58,29 +58,29 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <Card className="mx-auto max-w-xl p-8">
+    <Card className="mx-auto max-w-xl border-white/10 bg-white/5 p-8 shadow-[0_24px_60px_rgba(2,6,23,0.45)]">
       <form onSubmit={onSubmit} className="space-y-5">
         {mode === "signup" && (
           <>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-ink">Name</label>
+              <label className="text-sm font-medium text-white">Name</label>
               <Input name="name" placeholder="Aarav Sharma" required />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-ink">Username</label>
+              <label className="text-sm font-medium text-white">Username</label>
               <Input name="username" placeholder="aarav_writes" required />
             </div>
           </>
         )}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-ink">Email</label>
+          <label className="text-sm font-medium text-white">Email</label>
           <Input name="email" type="email" placeholder="you@example.com" required />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-ink">Password</label>
+          <label className="text-sm font-medium text-white">Password</label>
           <Input name="password" type="password" placeholder="Minimum 8 characters" required />
         </div>
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <p className="text-sm text-rose-300">{error}</p> : null}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Please wait..." : mode === "signup" ? "Create account" : "Log in"}
         </Button>

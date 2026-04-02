@@ -12,8 +12,8 @@ export default async function WritePage() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm uppercase tracking-[0.25em] text-ink/50">New piece</p>
-        <h1 className="font-display text-5xl text-ink">Write something that stays.</h1>
+        <p className="text-sm uppercase tracking-[0.25em] text-neutral-400">New piece</p>
+        <h1 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-5xl text-transparent">Write something that stays.</h1>
       </div>
       <PostEditorForm />
     </div>

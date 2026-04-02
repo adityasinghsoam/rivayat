@@ -41,11 +41,11 @@ export function BookmarkButton({
 
   return (
     <div className="space-y-1">
-      <Button variant="ghost" className={bookmarked ? "gap-2 text-ember" : "gap-2"} onClick={toggleBookmark} disabled={busy}>
-        <Bookmark className={bookmarked ? "fill-ember text-ember" : "text-ink/70"} size={18} />
+      <Button variant="ghost" className={bookmarked ? "gap-2 text-violet-300" : "gap-2"} onClick={toggleBookmark} disabled={busy}>
+        <Bookmark className={bookmarked ? "fill-violet-400 text-violet-400" : "text-neutral-400"} size={18} />
         {bookmarked ? "Saved" : "Save"}
       </Button>
-      {message ? <p className="text-xs text-ink/60">{message}</p> : null}
+      {message ? <p className="text-xs text-neutral-400">{message}</p> : null}
     </div>
   );
 }

@@ -42,10 +42,10 @@ export function FollowButton({
 
   return (
     <div className="space-y-1">
-      <Button variant={following ? "ghost" : "secondary"} onClick={toggleFollow} disabled={busy}>
+      <Button variant={following ? "ghost" : "primary"} onClick={toggleFollow} disabled={busy}>
         {busy ? "Updating..." : following ? "Unfollow" : "Follow"}
       </Button>
-      {message ? <p className="text-xs text-ink/60">{message}</p> : null}
+      {message ? <p className="text-xs text-neutral-400">{message}</p> : null}
     </div>
   );
 }

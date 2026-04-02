@@ -127,18 +127,18 @@ export function HomeFeed() {
   }, [loading, loadingMore, hasMore, nextCursor, queryKey]);
 
   if (loading) {
-    return <p className="text-sm text-ink/60">Loading posts...</p>;
+    return <p className="text-sm text-neutral-400">Loading posts...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-red-600">{error}</p>;
+    return <p className="text-sm text-rose-300">{error}</p>;
   }
 
   if (!posts.length) {
     return (
       <Card className="mx-auto flex max-w-3xl flex-col gap-3 p-8 text-center">
-        <p className="font-display text-3xl text-ink">Nothing here yet</p>
-        <p className="text-sm text-ink/65">{emptyStateMessage || "Start writing your first story"}</p>
+        <p className="font-display text-3xl text-white">Nothing here yet</p>
+        <p className="text-sm text-neutral-400">{emptyStateMessage || "Start writing your first story"}</p>
       </Card>
     );
   }
@@ -148,27 +148,29 @@ export function HomeFeed() {
       {posts.map((post, index) => (
         <Card
           key={post.slug}
-          className="animate-stagger-in flex min-w-0 flex-col gap-4 border-neutral-200 p-6 transition-all duration-200 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:shadow-md sm:p-7"
-          style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 80, 480)}ms` } as React.CSSProperties}
+          className="animate-stagger-in flex min-w-0 flex-col gap-4 border-white/10 bg-white/5 p-6 transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-105 hover:border-violet-400/70 hover:shadow-[0_24px_60px_rgba(139,92,246,0.24)] sm:p-7"
+          style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 600)}ms` } as React.CSSProperties}
         >
           <Link href={`/post/${post.slug}`} className="block min-w-0">
-            <h2 className="mb-3 break-words font-display text-[1.7rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2.1rem]">
+            <h2 className="mb-3 break-words bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-[1.8rem] font-semibold leading-tight tracking-tight text-transparent sm:text-[2.2rem]">
               {post.title}
             </h2>
-            <p className="max-w-3xl break-words text-[15px] leading-7 text-neutral-700">{post.excerpt}</p>
+            <p className="max-w-3xl break-words text-[15px] leading-7 text-neutral-300">{post.excerpt}</p>
           </Link>
 
           <div className="flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-                <Badge className="bg-neutral-100 text-neutral-700 transition hover:bg-amber-100 hover:text-amber-700">#{tag}</Badge>
+                <Badge className="border-violet-400/20 bg-violet-500/10 text-violet-200 transition hover:border-rose-400/30 hover:bg-rose-500/10 hover:text-rose-200">
+                  #{tag}
+                </Badge>
               </Link>
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 border-t border-black/5 pt-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-ink/58">
-              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-ink transition hover:text-amber-700">
+          <div className="flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-neutral-400">
+              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-200 transition hover:text-violet-300">
                 {post.author.name}
               </Link>{" · "}
               {formatDate(post.createdAt)}
@@ -178,8 +180,8 @@ export function HomeFeed() {
         </Card>
       ))}
 
-      {loadingMore ? <p className="py-2 text-center text-sm text-ink/60">Loading more posts...</p> : null}
-      {!hasMore ? <p className="py-2 text-center text-sm text-ink/60">No more posts</p> : null}
+      {loadingMore ? <p className="py-2 text-center text-sm text-neutral-400">Loading more posts...</p> : null}
+      {!hasMore ? <p className="py-2 text-center text-sm text-neutral-500">No more posts</p> : null}
       <div ref={sentinelRef} className="h-1" />
     </div>
   );

@@ -55,25 +55,29 @@ export function HeaderSearch() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search posts..."
-          className="rounded-full bg-white/92"
+          className="rounded-full bg-white/6"
         />
       </form>
       {searched ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+0.65rem)] z-30 rounded-[1.75rem] border border-neutral-200 bg-white/96 p-4 shadow-md">
+        <div className="absolute left-0 right-0 top-[calc(100%+0.65rem)] z-30 rounded-[1.75rem] border border-white/10 bg-slate-950/80 p-4 shadow-[0_18px_50px_rgba(2,6,23,0.5)] backdrop-blur-lg">
           {results.length ? (
             <div className="space-y-3">
               {results.map((post) => (
-                <Link key={post.slug} href={`/post/${post.slug}` as Route} className="block rounded-2xl p-3 transition-all duration-200 hover:bg-neutral-50">
-                  <p className="font-semibold tracking-tight text-ink">{post.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-neutral-700">{post.excerpt}</p>
-                  <p className="text-xs text-ink/55">
+                <Link
+                  key={post.slug}
+                  href={`/post/${post.slug}` as Route}
+                  className="block rounded-2xl border border-transparent p-3 transition-all duration-200 hover:border-violet-400/40 hover:bg-white/6"
+                >
+                  <p className="font-semibold tracking-tight text-white">{post.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-neutral-300">{post.excerpt}</p>
+                  <p className="text-xs text-neutral-400">
                     {post.author.name} · {formatDate(post.createdAt)}
                   </p>
                 </Link>
               ))}
             </div>
           ) : (
-            <p className="text-sm text-ink/60">No posts found</p>
+            <p className="text-sm text-neutral-400">No posts found</p>
           )}
         </div>
       ) : null}

@@ -24,7 +24,7 @@ export function RichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-stone prose-lg min-h-[360px] max-w-none rounded-[1.5rem] border border-black/10 bg-white/85 px-6 py-5 leading-8 focus:outline-none",
+          "prose prose-invert prose-lg min-h-[360px] max-w-none rounded-[1.5rem] border border-white/10 bg-white/5 px-6 py-5 leading-8 text-neutral-200 backdrop-blur-md focus:outline-none",
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -39,53 +39,37 @@ export function RichTextEditor({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("bold") && "bg-ink/5")}
-          onClick={() => editor.chain().focus().toggleBold().run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("bold") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleBold().run()}>
           Bold
         </Button>
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("italic") && "bg-ink/5")}
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("italic") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleItalic().run()}>
           Italic
         </Button>
         <Button
           variant="ghost"
-          className={cn(editor.isActive("heading", { level: 1 }) && "bg-ink/5")}
+          className={cn(editor.isActive("heading", { level: 1 }) && "border border-violet-400/40 bg-violet-500/10")}
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         >
           H1
         </Button>
         <Button
           variant="ghost"
-          className={cn(editor.isActive("heading", { level: 2 }) && "bg-ink/5")}
+          className={cn(editor.isActive("heading", { level: 2 }) && "border border-violet-400/40 bg-violet-500/10")}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         >
           H2
         </Button>
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("paragraph") && "bg-ink/5")}
-          onClick={() => editor.chain().focus().setParagraph().run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("paragraph") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().setParagraph().run()}>
           Paragraph
         </Button>
-        <Button
-          variant="ghost"
-          className={cn(editor.isActive("blockquote") && "bg-ink/5")}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        >
+        <Button variant="ghost" className={cn(editor.isActive("blockquote") && "border border-violet-400/40 bg-violet-500/10")} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
           Quote
         </Button>
         <Button variant="ghost" onClick={() => editor.chain().focus().setHardBreak().run()}>
           Line break
         </Button>
       </div>
-      <p className="text-xs text-ink/55">Use Enter for a new paragraph and Line break for poetry-style line spacing.</p>
+      <p className="text-xs text-neutral-400">Use Enter for a new paragraph and Line break for poetry-style line spacing.</p>
       <EditorContent editor={editor} />
     </div>
   );

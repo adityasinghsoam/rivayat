@@ -7,6 +7,9 @@ import { useAuth } from "@/components/auth-provider";
 import { NotificationBell } from "@/components/notification-bell";
 import { Button } from "@/components/ui/button";
 
+const navLinkClass =
+  "relative px-3 py-2 text-sm text-neutral-300 transition-colors duration-200 hover:text-white after:absolute after:bottom-1 after:left-3 after:h-px after:w-0 after:bg-gradient-to-r after:from-violet-400 after:to-rose-400 after:transition-all after:duration-200 hover:after:w-[calc(100%-1.5rem)]";
+
 export function AuthNav() {
   const router = useRouter();
   const { user, loading, logout } = useAuth();
@@ -27,7 +30,7 @@ export function AuthNav() {
           <Button variant="ghost">Log in</Button>
         </Link>
         <Link href="/signup">
-          <Button variant="secondary">Join</Button>
+          <Button variant="primary">Join</Button>
         </Link>
       </div>
     );
@@ -35,17 +38,17 @@ export function AuthNav() {
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
-      <Link href="/" className="px-3 py-2 text-sm text-ink/75 transition hover:text-ink">
+      <Link href="/" className={navLinkClass}>
         Explore
       </Link>
-      <Link href={"/saved" as Route} className="px-3 py-2 text-sm text-ink/80 transition hover:text-ink">
+      <Link href={"/saved" as Route} className={navLinkClass}>
         Saved
       </Link>
-      <Link href="/write" className="px-3 py-2 text-sm text-ink/80 transition hover:text-ink">
+      <Link href="/write" className={navLinkClass}>
         Write
       </Link>
       <NotificationBell />
-      <Link href={`/profile/${user.username}` as Route} className="px-3 py-2 text-sm text-ink/80 transition hover:text-ink">
+      <Link href={`/profile/${user.username}` as Route} className={navLinkClass}>
         Profile
       </Link>
       <Button variant="ghost" onClick={onLogout}>

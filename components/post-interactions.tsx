@@ -53,14 +53,14 @@ export function LikeButton({
     <div className="space-y-1">
       <Button
         variant="ghost"
-        className={liked ? "gap-2 rounded-full text-ember" : "gap-2 rounded-full"}
+        className={liked ? "gap-2 rounded-full text-rose-300" : "gap-2 rounded-full"}
         onClick={toggleLike}
         disabled={busy}
       >
-        <Heart className={liked ? "fill-ember text-ember" : "text-ink/70"} size={18} />
+        <Heart className={liked ? "fill-rose-400 text-rose-400" : "text-neutral-400"} size={18} />
         {count}
       </Button>
-      {message ? <p className="text-xs text-ink/60">{message}</p> : null}
+      {message ? <p className="text-xs text-neutral-400">{message}</p> : null}
     </div>
   );
 }

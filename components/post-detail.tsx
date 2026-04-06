@@ -149,10 +149,11 @@ export function PostDetail({ slug }: { slug: string }) {
         </div>
       </header>
 
-      <Card className={["animate-rise-in overflow-hidden p-0 transition-all duration-300 ease-out [animation-delay:280ms]", readingMode ? "shadow-none" : ""].join(" ")}>
+      <Card className={["animate-rise-in relative overflow-hidden p-0 transition-all duration-300 ease-out [animation-delay:280ms]", readingMode ? "shadow-none" : ""].join(" ")}>
+        <div className="absolute inset-y-10 left-6 w-px bg-neutral-300 sm:left-8" />
         <div
           className={[
-            "reading-reveal prose mx-auto break-words px-5 py-10 text-neutral-700 transition-all duration-300 ease-out sm:px-10 sm:py-12",
+            "reading-reveal prose mx-auto break-words px-5 py-10 pl-9 text-neutral-700 transition-all duration-300 ease-out sm:px-10 sm:py-12 sm:pl-12",
             readingMode ? "max-w-4xl text-[1.12rem] leading-8 sm:text-[1.2rem] [&_p]:my-7" : "max-w-3xl text-[1.02rem] leading-relaxed sm:text-[1.08rem]",
             "[&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:break-words [&_p]:whitespace-pre-wrap",
           ].join(" ")}

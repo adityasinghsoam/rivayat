@@ -122,6 +122,7 @@ body.reading-mode main {
   border-left-color: #171717;
   color: #404040;
   background: #fafafa;
+  font-style: italic;
 }
 
 .prose p {

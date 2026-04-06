@@ -142,7 +142,7 @@ export function HomeFeed() {
         <div className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50 text-lg text-neutral-500">
           /
         </div>
-        <p className="font-display text-3xl text-black">Nothing here yet</p>
+        <p className="font-display text-3xl text-black">This space is waiting for its first story.</p>
         <p className="max-w-md text-sm leading-7 text-neutral-500">
           {emptyStateMessage || "Nothing here yet — your words could be the first."}
         </p>
@@ -155,7 +155,7 @@ export function HomeFeed() {
       {posts.map((post, index) => (
         <Card
           key={post.slug}
-          className="animate-stagger-in relative flex min-w-0 flex-col gap-4 overflow-hidden p-6 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md sm:p-7"
+          className="animate-stagger-in relative flex min-w-0 flex-col gap-4 overflow-hidden p-6 transition-all duration-200 ease-out hover:shadow-md sm:p-7"
           style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 600)}ms` } as React.CSSProperties}
         >
           <div className="absolute inset-y-6 left-0 w-px bg-neutral-300" />
@@ -164,7 +164,7 @@ export function HomeFeed() {
               <h2 className="mb-3 max-w-3xl break-words font-display text-[1.65rem] font-semibold leading-[1.16] tracking-tight text-black sm:text-[2rem]">
                 {post.title}
               </h2>
-              <p className="max-w-3xl break-words text-[15px] leading-8 text-neutral-700">{post.excerpt}</p>
+              <p className="max-w-3xl break-words text-[15px] italic leading-8 text-neutral-700">{post.excerpt}</p>
             </Link>
 
             <div className="mt-4 flex flex-wrap gap-2">

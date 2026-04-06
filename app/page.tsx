@@ -161,7 +161,7 @@ function FeaturedCard({ post, priority = false }: { post: HomePost; priority?: b
           >
             {post.title}
           </Link>
-          <p className="max-w-2xl text-sm leading-8 text-neutral-700">{post.excerpt}</p>
+          <p className="max-w-2xl text-sm italic leading-8 text-neutral-700">{post.excerpt}</p>
         </div>
         <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tracking-[0.08em] text-neutral-500">
           <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-800 transition-colors hover:text-black">
@@ -190,7 +190,7 @@ function TrendingCard({ post, index }: { post: HomePost; index: number }) {
           <Link href={`/post/${post.slug}` as Route} className="block max-w-sm font-display text-xl font-semibold leading-[1.2] text-black">
             {post.title}
           </Link>
-          <p className="max-w-sm text-sm leading-8 text-neutral-700">{post.excerpt}</p>
+          <p className="max-w-sm text-sm italic leading-8 text-neutral-700">{post.excerpt}</p>
         </div>
         <div className="mt-5 text-xs tracking-[0.08em] text-neutral-500">
           <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-800 transition-colors hover:text-black">
@@ -210,18 +210,18 @@ export default async function HomePage() {
     <div>
       <section className="border-b border-neutral-200 bg-[linear-gradient(180deg,#fbf8f2_0%,#ffffff_92%)]">
         <div className="mx-auto max-w-5xl px-4 py-12">
-          <div className="max-w-3xl space-y-5">
-            <p className="text-xs uppercase tracking-[0.32em] text-neutral-500">A quiet home for thoughtful writing</p>
+          <div className="max-w-3xl space-y-6">
+            <p className="text-xs uppercase tracking-[0.32em] text-neutral-500">A quiet home for words that stay with you</p>
             <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-tight text-black sm:text-6xl">
-              A home for poetry and stories
+              A home for poetry and <span className="italic text-neutral-800">stories</span>
             </h1>
             <p className="max-w-2xl text-base leading-8 text-neutral-700 sm:text-lg">
               Rivayat brings poems, essays, and stories into one calm reading experience built for writers who care
               about craft and readers who make time for it.
             </p>
-            <div className="flex flex-wrap items-center gap-4 pt-1">
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link href="/write">
-                <Button className="px-6 py-3 text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-900">Start Writing</Button>
+                <Button className="px-6 py-3 text-base hover:bg-neutral-900">Start Writing</Button>
               </Link>
               <p className="text-sm text-neutral-500">{storyCount}+ stories shared</p>
             </div>

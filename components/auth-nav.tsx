@@ -38,18 +38,6 @@ export function AuthNav() {
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
-      <Link href="/" className={navLinkClass}>
-        Explore
-      </Link>
-      <Link href={"/saved" as Route} className={navLinkClass}>
-        Saved
-      </Link>
-      <Link href="/write" className={navLinkClass}>
-        Write
-      </Link>
-      <Link href={"/drafts" as Route} className={navLinkClass}>
-        Drafts
-      </Link>
       <NotificationBell />
       <Link href={`/profile/${user.username}` as Route} className={navLinkClass}>
         Profile

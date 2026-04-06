@@ -140,11 +140,11 @@ export function HomeFeed() {
     return (
       <Card className="mx-auto flex max-w-3xl flex-col items-center gap-3 p-8 text-center">
         <div className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50 text-lg text-neutral-500">
-          ✦
+          /
         </div>
-        <p className="font-display text-3xl text-black">No posts yet</p>
+        <p className="font-display text-3xl text-black">Nothing here yet</p>
         <p className="max-w-md text-sm leading-7 text-neutral-500">
-          {emptyStateMessage || "No posts yet — be the first to write"}
+          {emptyStateMessage || "Nothing here yet — your words could be the first."}
         </p>
       </Card>
     );
@@ -155,34 +155,37 @@ export function HomeFeed() {
       {posts.map((post, index) => (
         <Card
           key={post.slug}
-          className="animate-stagger-in flex min-w-0 flex-col gap-4 p-6 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md sm:p-7"
+          className="animate-stagger-in relative flex min-w-0 flex-col gap-4 overflow-hidden p-6 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md sm:p-7"
           style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 600)}ms` } as React.CSSProperties}
         >
-          <Link href={`/post/${post.slug}`} className="block min-w-0">
-            <h2 className="mb-3 break-words font-display text-[1.65rem] font-semibold leading-tight tracking-tight text-black sm:text-[2rem]">
-              {post.title}
-            </h2>
-            <p className="max-w-3xl break-words text-[15px] leading-7 text-neutral-700">{post.excerpt}</p>
-          </Link>
+          <div className="absolute inset-y-6 left-0 w-px bg-neutral-300" />
+          <div className="pl-4">
+            <Link href={`/post/${post.slug}`} className="block min-w-0">
+              <h2 className="mb-3 max-w-3xl break-words font-display text-[1.65rem] font-semibold leading-[1.16] tracking-tight text-black sm:text-[2rem]">
+                {post.title}
+              </h2>
+              <p className="max-w-3xl break-words text-[15px] leading-8 text-neutral-700">{post.excerpt}</p>
+            </Link>
 
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-                <Badge className="transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900">
-                  #{tag}
-                </Badge>
-              </Link>
-            ))}
-          </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
+                  <Badge className="transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900">
+                    #{tag}
+                  </Badge>
+                </Link>
+              ))}
+            </div>
 
-          <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-neutral-500">
-              <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-900 transition hover:text-neutral-700">
-                {post.author.name}
-              </Link>{" "}
-              · {formatDate(post.createdAt)} · {post.readTime} min read · {post.views} views
-            </p>
-            <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
+            <div className="mt-4 flex flex-col gap-3 border-t border-neutral-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs tracking-[0.08em] text-neutral-500">
+                <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-900 transition hover:text-neutral-700">
+                  {post.author.name}
+                </Link>{" "}
+                · {formatDate(post.createdAt)} · {post.readTime} min read · {post.views} views
+              </p>
+              <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
+            </div>
           </div>
         </Card>
       ))}

@@ -114,10 +114,12 @@ function SectionHeading({
   description: string;
 }) {
   return (
-    <div className="space-y-2">
-      <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">{eyebrow}</p>
-      <h2 className="font-display text-2xl font-semibold text-black sm:text-[2rem]">{title}</h2>
-      <p className="max-w-2xl text-base leading-7 text-neutral-700">{description}</p>
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-[0.28em] text-neutral-500">{eyebrow}</p>
+      <div className="max-w-3xl space-y-2">
+        <h2 className="font-display text-2xl font-semibold text-black sm:text-[2rem]">{title}</h2>
+        <p className="max-w-2xl text-base leading-8 text-neutral-700">{description}</p>
+      </div>
     </div>
   );
 }
@@ -132,9 +134,11 @@ function EmptyPanel({
   return (
     <Card className="flex min-h-[220px] flex-col justify-between p-6">
       <div className="space-y-3">
-        <div className="h-10 w-10 rounded-full border border-neutral-200 bg-neutral-50" />
+        <div className="flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-neutral-50 text-neutral-500">
+          /
+        </div>
         <p className="font-display text-2xl text-black">{title}</p>
-        <p className="text-sm leading-7 text-neutral-600">{description}</p>
+        <p className="max-w-sm text-sm leading-7 text-neutral-600">{description}</p>
       </div>
     </Card>
   );
@@ -142,26 +146,32 @@ function EmptyPanel({
 
 function FeaturedCard({ post, priority = false }: { post: HomePost; priority?: boolean }) {
   return (
-    <Card className={priority ? "flex h-full flex-col gap-5 p-7" : "flex h-full flex-col gap-4 p-6"}>
-      <div className="flex flex-wrap items-center gap-2">
-        {post.tags.slice(0, 2).map((tag) => (
-          <Badge key={tag}>#{tag}</Badge>
-        ))}
-      </div>
-      <div className="space-y-3">
-        <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold leading-tight tracking-tight text-black sm:text-[2rem]">
-          {post.title}
-        </Link>
-        <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
-      </div>
-      <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-neutral-500">
-        <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-900 transition-colors hover:text-neutral-700">
-          {post.author.name}
-        </Link>
-        <span>·</span>
-        <span>{formatDate(post.createdAt)}</span>
-        <span>·</span>
-        <span>{post.readTime} min read</span>
+    <Card className={priority ? "relative flex h-full flex-col gap-5 overflow-hidden p-7" : "relative flex h-full flex-col gap-4 overflow-hidden p-6"}>
+      <div className="absolute inset-y-6 left-0 w-px bg-neutral-300" />
+      <div className="pl-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {post.tags.slice(0, 2).map((tag) => (
+            <Badge key={tag}>#{tag}</Badge>
+          ))}
+        </div>
+        <div className="mt-4 space-y-3">
+          <Link
+            href={`/post/${post.slug}` as Route}
+            className="block max-w-2xl font-display text-2xl font-semibold leading-[1.15] tracking-tight text-black sm:text-[2rem]"
+          >
+            {post.title}
+          </Link>
+          <p className="max-w-2xl text-sm leading-8 text-neutral-700">{post.excerpt}</p>
+        </div>
+        <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs tracking-[0.08em] text-neutral-500">
+          <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-800 transition-colors hover:text-black">
+            {post.author.name}
+          </Link>
+          <span>·</span>
+          <span>{formatDate(post.createdAt)}</span>
+          <span>·</span>
+          <span>{post.readTime} min read</span>
+        </div>
       </div>
     </Card>
   );
@@ -169,22 +179,25 @@ function FeaturedCard({ post, priority = false }: { post: HomePost; priority?: b
 
 function TrendingCard({ post, index }: { post: HomePost; index: number }) {
   return (
-    <Card className="flex h-full flex-col gap-4 p-6">
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm font-medium text-neutral-500">0{index + 1}</p>
-        <Badge>Trending today</Badge>
-      </div>
-      <div className="space-y-2">
-        <Link href={`/post/${post.slug}` as Route} className="block font-display text-xl font-semibold leading-tight text-black">
-          {post.title}
-        </Link>
-        <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
-      </div>
-      <div className="mt-auto text-sm text-neutral-500">
-        <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-900 transition-colors hover:text-neutral-700">
-          {post.author.name}
-        </Link>{" "}
-        · {post._count.likes} likes · {post.views} views
+    <Card className="relative flex h-full flex-col gap-4 overflow-hidden p-6">
+      <div className="absolute inset-y-6 left-0 w-px bg-neutral-300" />
+      <div className="pl-4">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-sm font-medium text-neutral-500">0{index + 1}</p>
+          <Badge>Trending today</Badge>
+        </div>
+        <div className="mt-4 space-y-2">
+          <Link href={`/post/${post.slug}` as Route} className="block max-w-sm font-display text-xl font-semibold leading-[1.2] text-black">
+            {post.title}
+          </Link>
+          <p className="max-w-sm text-sm leading-8 text-neutral-700">{post.excerpt}</p>
+        </div>
+        <div className="mt-5 text-xs tracking-[0.08em] text-neutral-500">
+          <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-800 transition-colors hover:text-black">
+            {post.author.name}
+          </Link>{" "}
+          · {post._count.likes} likes · {post.views} views
+        </div>
       </div>
     </Card>
   );
@@ -195,11 +208,11 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="border-b border-neutral-200 bg-[linear-gradient(180deg,#fafafa_0%,#ffffff_100%)]">
+      <section className="border-b border-neutral-200 bg-[linear-gradient(180deg,#fbf8f2_0%,#ffffff_92%)]">
         <div className="mx-auto max-w-5xl px-4 py-12">
           <div className="max-w-3xl space-y-5">
-            <Badge>Trusted space for thoughtful writing</Badge>
-            <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight text-black sm:text-6xl">
+            <p className="text-xs uppercase tracking-[0.32em] text-neutral-500">A quiet home for thoughtful writing</p>
+            <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.02] tracking-tight text-black sm:text-6xl">
               A home for poetry and stories
             </h1>
             <p className="max-w-2xl text-base leading-8 text-neutral-700 sm:text-lg">
@@ -208,11 +221,14 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-1">
               <Link href="/write">
-                <Button className="px-6 py-3 text-base transition-all duration-200 hover:-translate-y-0.5">Start Writing</Button>
+                <Button className="px-6 py-3 text-base transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-900">Start Writing</Button>
               </Link>
               <p className="text-sm text-neutral-500">{storyCount}+ stories shared</p>
             </div>
           </div>
+        </div>
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="h-px bg-neutral-200" />
         </div>
       </section>
 
@@ -228,7 +244,7 @@ export default async function HomePage() {
               {featuredPosts[0] ? (
                 <FeaturedCard post={featuredPosts[0]} priority />
               ) : (
-                <EmptyPanel title="No featured posts yet" description="Publish a few stories and Rivayat will begin surfacing standout pieces here." />
+                <EmptyPanel title="Nothing here yet" description="A few published stories will give this shelf its shape and character." />
               )}
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
@@ -257,7 +273,7 @@ export default async function HomePage() {
               trendingPosts.slice(0, 3).map((post, index) => <TrendingCard key={post.id} post={post} index={index} />)
             ) : (
               <>
-                <EmptyPanel title="No trending posts yet" description="Once readers start engaging with stories, the most active pieces will appear here." />
+                <EmptyPanel title="Nothing here yet" description="Reader momentum will surface here as the library of posts grows." />
                 <EmptyPanel title="Popular posts" description="Views and likes help surface the writing readers are spending time with." />
                 <EmptyPanel title="Momentum builds here" description="Return after a few publications to see what is resonating across Rivayat." />
               </>

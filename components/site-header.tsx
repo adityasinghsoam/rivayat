@@ -24,6 +24,7 @@ export function SiteHeader() {
 
   return (
     <header
+      data-site-header
       className={`sticky top-0 z-30 border-b border-white/10 backdrop-blur-lg transition-all duration-300 ${
         scrolled ? "bg-white/8 shadow-[0_10px_30px_rgba(2,6,23,0.24)]" : "bg-white/5"
       }`}

@@ -23,6 +23,8 @@ export default async function EditPostPage({
       content: true,
       tags: true,
       language: true,
+      isPublished: true,
+      updatedAt: true,
       authorId: true,
     },
   });
@@ -48,6 +50,8 @@ export default async function EditPostPage({
           content: post.content,
           tags: post.tags,
           language: post.language,
+          isPublished: post.isPublished,
+          updatedAt: post.updatedAt.toISOString(),
         }}
       />
     </div>

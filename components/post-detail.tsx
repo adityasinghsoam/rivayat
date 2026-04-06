@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Route } from "next";
+import { useAuth } from "@/components/auth-provider";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CommentsSection } from "@/components/comments-section";
 import { LikeButton } from "@/components/post-interactions";
@@ -38,9 +40,11 @@ type PostDetailData = {
 };
 
 export function PostDetail({ slug }: { slug: string }) {
+  const { user } = useAuth();
   const [post, setPost] = useState<PostDetailData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [readingMode, setReadingMode] = useState(false);
 
   useEffect(() => {
     apiFetch<{ post: PostDetailData }>(`/api/posts/${slug}`)
@@ -55,6 +59,17 @@ export function PostDetail({ slug }: { slug: string }) {
       });
   }, [slug]);
 
+  useEffect(() => {
+    document.body.classList.toggle("reading-mode", readingMode);
+
+    return () => {
+      document.body.classList.remove("reading-mode");
+    };
+  }, [readingMode]);
+
+  const sanitizedContent = useMemo(() => sanitizeRichText(post?.content ?? ""), [post?.content]);
+  const isAuthor = user?.id === post?.author.id;
+
   if (loading) {
     return <p className="text-sm text-neutral-400">Loading post...</p>;
   }
@@ -68,22 +83,47 @@ export function PostDetail({ slug }: { slug: string }) {
   }
 
   return (
-    <article className="mx-auto mt-2 flex max-w-4xl flex-col gap-8 px-0 sm:mt-4">
-      <header className="animate-rise-in relative mx-auto flex w-full max-w-4xl flex-col gap-5 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(2,6,23,0.4)] backdrop-blur-md sm:p-8">
-        <div className="relative flex flex-wrap gap-2">
-          <Badge className="border-white/10 bg-white/6 text-neutral-300">{post.language}</Badge>
-          {post.tags.map((tag) => (
-            <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
-              <Badge className="border-white/10 bg-white/6 text-neutral-200">#{tag}</Badge>
-            </Link>
-          ))}
+    <article
+      className={[
+        "mx-auto flex flex-col gap-8 px-0 transition-all duration-300 ease-out",
+        readingMode ? "max-w-5xl pt-2 sm:pt-4" : "mt-2 max-w-4xl sm:mt-4",
+      ].join(" ")}
+    >
+      <header
+        className={[
+          "animate-rise-in relative mx-auto flex w-full flex-col gap-5 overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-5 shadow-[0_20px_60px_rgba(2,6,23,0.4)] backdrop-blur-md transition-all duration-300 ease-out sm:p-8",
+          readingMode ? "max-w-5xl border-white/6 bg-white/[0.03] shadow-none" : "max-w-4xl",
+        ].join(" ")}
+      >
+        <div className="relative flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            <Badge className="border-white/10 bg-white/6 text-neutral-300">{post.language}</Badge>
+            {post.tags.map((tag) => (
+              <Link key={tag} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
+                <Badge className="border-white/10 bg-white/6 text-neutral-200">#{tag}</Badge>
+              </Link>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {isAuthor ? (
+              <Link href={`/posts/${post.id}/edit` as Route}>
+                <Button variant="secondary" className="px-4 py-2">
+                  Edit
+                </Button>
+              </Link>
+            ) : null}
+            <Button variant={readingMode ? "primary" : "secondary"} className="px-4 py-2" onClick={() => setReadingMode((current) => !current)}>
+              {readingMode ? "Exit Reading Mode" : "Reading Mode"}
+            </Button>
+          </div>
         </div>
+
         <div className="relative space-y-4">
           <h1 className="animate-rise-in break-words font-display text-4xl font-semibold leading-tight tracking-tight text-white [animation-delay:120ms] sm:text-5xl lg:text-6xl">
             {post.title}
           </h1>
           <div className="animate-rise-in border-b border-white/10 pb-5 [animation-delay:200ms]">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/8 text-lg font-semibold text-neutral-300">
                   {post.author.avatarUrl ? (
@@ -92,7 +132,7 @@ export function PostDetail({ slug }: { slug: string }) {
                     post.author.name.charAt(0).toUpperCase()
                   )}
                 </div>
-                <div>
+                <div className="space-y-1">
                   <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-white transition hover:text-indigo-300">
                     {post.author.name}
                   </Link>
@@ -101,30 +141,45 @@ export function PostDetail({ slug }: { slug: string }) {
                   </p>
                 </div>
               </div>
-              <FollowButton username={post.author.username} initialFollowing={post.author.isFollowing} />
+              {!isAuthor && !readingMode ? <FollowButton username={post.author.username} initialFollowing={post.author.isFollowing} /> : null}
             </div>
-            {post.author.bio ? <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-300">{post.author.bio}</p> : null}
+            {post.author.bio && !readingMode ? <p className="mt-4 max-w-2xl text-sm leading-7 text-neutral-300">{post.author.bio}</p> : null}
             {!post.isPublished ? <p className="mt-3 text-xs uppercase tracking-[0.2em] text-neutral-400">Draft preview</p> : null}
           </div>
         </div>
       </header>
 
-      <Card className="animate-rise-in overflow-hidden p-0 [animation-delay:280ms]">
+      <Card
+        className={[
+          "animate-rise-in overflow-hidden p-0 transition-all duration-300 ease-out [animation-delay:280ms]",
+          readingMode ? "border-white/6 bg-transparent shadow-none" : "",
+        ].join(" ")}
+      >
         <div
-          className="reading-reveal prose prose-invert prose-lg mx-auto max-w-3xl break-words px-5 py-10 text-[1.02rem] leading-relaxed text-neutral-300 sm:px-10 sm:py-12 sm:text-[1.08rem] [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-400 [&_blockquote]:bg-white/6 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:my-6 [&_p]:break-words [&_p]:whitespace-pre-wrap"
-          dangerouslySetInnerHTML={{ __html: sanitizeRichText(post.content) }}
+          className={[
+            "reading-reveal prose prose-invert mx-auto break-words px-5 py-10 text-neutral-300 transition-all duration-300 ease-out sm:px-10 sm:py-12",
+            readingMode
+              ? "max-w-4xl text-[1.12rem] leading-8 sm:text-[1.2rem] [&_blockquote]:bg-white/[0.04] [&_p]:my-7"
+              : "max-w-3xl text-[1.02rem] leading-relaxed sm:text-[1.08rem]",
+            "[&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-indigo-400 [&_blockquote]:px-5 [&_blockquote]:py-3 [&_h1]:mb-6 [&_h1]:mt-10 [&_h1]:break-words [&_h1]:font-display [&_h1]:text-4xl [&_h2]:mb-5 [&_h2]:mt-9 [&_h2]:break-words [&_h2]:font-display [&_h2]:text-3xl [&_p]:break-words [&_p]:whitespace-pre-wrap",
+          ].join(" ")}
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
       </Card>
 
-      <Card className="animate-rise-in flex flex-col gap-4 p-5 [animation-delay:360ms] sm:flex-row sm:items-center sm:justify-between sm:p-6">
-        <div className="flex flex-wrap items-center gap-4">
-          <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
-          <p className="text-sm text-neutral-400">{post.commentCount} comments</p>
-        </div>
-        <BookmarkButton postId={post.id} initialBookmarked={post.bookmarkedByMe} />
-      </Card>
+      {!readingMode ? (
+        <>
+          <Card className="animate-rise-in flex flex-col gap-4 p-5 [animation-delay:360ms] sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex flex-wrap items-center gap-4">
+              <LikeButton postId={post.id} initialLiked={post.likedByMe} initialCount={post.likeCount} />
+              <p className="text-sm text-neutral-400">{post.commentCount} comments</p>
+            </div>
+            <BookmarkButton postId={post.id} initialBookmarked={post.bookmarkedByMe} />
+          </Card>
 
-      <CommentsSection postId={post.id} />
+          <CommentsSection postId={post.id} />
+        </>
+      ) : null}
     </article>
   );
 }

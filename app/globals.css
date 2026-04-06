@@ -100,6 +100,20 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+body [data-site-header] {
+  transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+body.reading-mode [data-site-header] {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-16px);
+}
+
+body.reading-mode main {
+  padding-top: 1rem;
+}
+
 .prose {
   color: #d4d4d8;
 }

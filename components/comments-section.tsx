@@ -68,7 +68,7 @@ export function CommentsSection({ postId }: { postId: string }) {
 
   return (
     <section className="space-y-4">
-      <h2 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-3xl text-transparent">Comments</h2>
+      <h2 className="font-display text-3xl text-black">Comments</h2>
       <Card className="space-y-3">
         <Textarea
           value={content}
@@ -76,23 +76,23 @@ export function CommentsSection({ postId }: { postId: string }) {
           placeholder={user ? "Write a comment..." : "Login to comment"}
           disabled={!user || busy}
         />
-        {!user ? <p className="text-sm text-neutral-400">Login to comment</p> : null}
-        {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+        {!user ? <p className="text-sm text-neutral-500">Login to comment</p> : null}
+        {error ? <p className="text-sm text-neutral-700">{error}</p> : null}
         <Button variant="secondary" onClick={submitComment} disabled={!user || busy || !content.trim()}>
           {busy ? "Posting..." : "Post comment"}
         </Button>
       </Card>
 
-      {loading ? <p className="text-sm text-neutral-400">Loading comments...</p> : null}
-      {!loading && !comments.length ? <p className="text-sm text-neutral-400">No comments yet.</p> : null}
+      {loading ? <p className="text-sm text-neutral-500">Loading comments...</p> : null}
+      {!loading && !comments.length ? <p className="text-sm text-neutral-500">No comments yet.</p> : null}
 
       <div className="space-y-3">
         {comments.map((comment) => (
           <Card key={comment.id} className="space-y-2">
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-neutral-500">
               {comment.author.name} · {formatDate(comment.createdAt)}
             </p>
-            <p className="whitespace-pre-wrap text-sm leading-7 text-neutral-200">{comment.content}</p>
+            <p className="whitespace-pre-wrap text-sm leading-7 text-neutral-700">{comment.content}</p>
           </Card>
         ))}
       </div>

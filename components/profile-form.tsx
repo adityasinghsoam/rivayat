@@ -46,18 +46,18 @@ export function ProfileForm({
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <label className="text-sm font-medium text-white">Name</label>
+        <label className="text-sm font-medium text-neutral-900">Name</label>
         <Input value={name} onChange={(event) => setName(event.target.value)} />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium text-white">Avatar URL</label>
+        <label className="text-sm font-medium text-neutral-900">Avatar URL</label>
         <Input value={avatarUrl} onChange={(event) => setAvatarUrl(event.target.value)} placeholder="https://..." />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium text-white">Bio</label>
+        <label className="text-sm font-medium text-neutral-900">Bio</label>
         <Textarea value={bio} onChange={(event) => setBio(event.target.value)} />
       </div>
-      {error ? <p className="text-sm text-rose-300">{error}</p> : null}
+      {error ? <p className="text-sm text-neutral-700">{error}</p> : null}
       <Button onClick={submit} disabled={busy}>
         {busy ? "Saving..." : "Save profile"}
       </Button>

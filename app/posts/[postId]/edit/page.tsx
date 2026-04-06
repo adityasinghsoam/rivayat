@@ -40,8 +40,8 @@ export default async function EditPostPage({
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <p className="text-sm uppercase tracking-[0.25em] text-neutral-400">Revision</p>
-        <h1 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-5xl text-transparent">Sharpen the draft.</h1>
+        <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">Revision</p>
+        <h1 className="font-display text-5xl text-black">Sharpen the draft.</h1>
       </div>
       <PostEditorForm
         initialValue={{

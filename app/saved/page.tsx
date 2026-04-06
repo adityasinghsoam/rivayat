@@ -12,8 +12,8 @@ export default async function SavedPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="space-y-2">
-        <h1 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-4xl text-transparent">Saved</h1>
-        <p className="text-sm text-neutral-400">Posts you bookmarked to read later.</p>
+        <h1 className="font-display text-4xl text-black">Saved</h1>
+        <p className="text-sm text-neutral-500">Posts you bookmarked to read later.</p>
       </div>
       <SavedPosts />
     </div>

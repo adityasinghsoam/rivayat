@@ -37,18 +37,18 @@ export function DraftsList() {
   }, []);
 
   if (loading) {
-    return <p className="text-sm text-neutral-400">Loading drafts...</p>;
+    return <p className="text-sm text-neutral-500">Loading drafts...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-neutral-300">{error}</p>;
+    return <p className="text-sm text-neutral-700">{error}</p>;
   }
 
   if (!drafts.length) {
     return (
       <Card className="p-8 text-center">
-        <p className="font-display text-3xl text-white">No drafts yet</p>
-        <p className="mt-2 text-sm text-neutral-400">Start a new draft and come back to refine it later.</p>
+        <p className="font-display text-3xl text-black">No drafts yet</p>
+        <p className="mt-2 text-sm text-neutral-500">Start a new draft and come back to refine it later.</p>
       </Card>
     );
   }
@@ -57,11 +57,11 @@ export function DraftsList() {
     <div className="space-y-4">
       {drafts.map((draft) => (
         <Card key={draft.id} className="space-y-3 p-6">
-          <Link href={`/posts/${draft.id}/edit` as Route} className="block font-display text-2xl text-white">
+          <Link href={`/posts/${draft.id}/edit` as Route} className="block font-display text-2xl text-black">
             {draft.title || "Untitled draft"}
           </Link>
-          <p className="text-sm leading-7 text-neutral-300">{draft.excerpt || "No excerpt yet."}</p>
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm leading-7 text-neutral-700">{draft.excerpt || "No excerpt yet."}</p>
+          <p className="text-sm text-neutral-500">
             Updated {formatDate(draft.updatedAt)} · {draft.readTime} min read · {draft.views} views
           </p>
         </Card>

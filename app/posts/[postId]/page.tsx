@@ -65,18 +65,14 @@ export default async function PostDetailsPage({
     <article className="mx-auto max-w-4xl space-y-8">
       <div className="space-y-5">
         <div className="flex flex-wrap gap-3">
-          <Badge className="border-violet-400/30 bg-violet-500/12 text-violet-200">{post.language}</Badge>
+          <Badge>{post.language}</Badge>
           {post.tags.map((tag) => (
-            <Badge key={tag} className="border-white/10 bg-white/6 text-neutral-200">
-              #{tag}
-            </Badge>
+            <Badge key={tag}>#{tag}</Badge>
           ))}
         </div>
-        <h1 className="bg-gradient-to-r from-white via-violet-200 to-rose-300 bg-clip-text font-display text-5xl leading-tight text-transparent sm:text-6xl">
-          {post.title}
-        </h1>
-        <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-400">
-          <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-200">
+        <h1 className="font-display text-5xl leading-tight text-black sm:text-6xl">{post.title}</h1>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
+          <Link href={`/profile/${post.author.username}` as Route} className="font-medium text-neutral-900">
             {post.author.name}
           </Link>
           <span>{formatDate(post.createdAt)}</span>
@@ -96,7 +92,7 @@ export default async function PostDetailsPage({
       </div>
 
       <Card className="p-8">
-        <div className="prose prose-invert prose-lg max-w-none text-neutral-300" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="prose prose-lg max-w-none text-neutral-700" dangerouslySetInnerHTML={{ __html: post.content }} />
       </Card>
 
       <section className="space-y-5">

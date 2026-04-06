@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
@@ -95,8 +95,8 @@ select {
 
 body {
   min-height: 100vh;
-  background-image: linear-gradient(180deg, #0b0f19 0%, #111827 100%);
-  color: #f8fafc;
+  background: #ffffff;
+  color: #171717;
   text-rendering: optimizeLegibility;
 }
 
@@ -115,12 +115,13 @@ body.reading-mode main {
 }
 
 .prose {
-  color: #d4d4d8;
+  color: #404040;
 }
 
 .prose blockquote {
-  border-left-color: #6366f1;
-  color: #e4e4e7;
+  border-left-color: #171717;
+  color: #404040;
+  background: #fafafa;
 }
 
 .prose p {
@@ -134,7 +135,7 @@ body.reading-mode main {
 .prose h3 {
   font-family: Georgia, serif;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: #171717;
 }
 
 .prose h1,
@@ -144,16 +145,16 @@ body.reading-mode main {
 
 .prose ul,
 .prose ol {
-  color: #d4d4d8;
+  color: #404040;
 }
 
 .prose a {
-  color: #818cf8;
+  color: #171717;
   text-decoration: none;
 }
 
 .prose a:hover {
-  color: #fbbf24;
+  color: #525252;
 }
 
 @media (prefers-reduced-motion: reduce) {

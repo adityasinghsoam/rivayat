@@ -49,15 +49,15 @@ export function ProfileView({ username }: { username: string }) {
   }, [username]);
 
   if (loading) {
-    return <p className="text-sm text-neutral-400">Loading profile...</p>;
+    return <p className="text-sm text-neutral-500">Loading profile...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-neutral-300">{error === "User not found." ? "User not found" : error}</p>;
+    return <p className="text-sm text-neutral-700">{error === "User not found." ? "User not found" : error}</p>;
   }
 
   if (!profile) {
-    return <p className="text-sm text-neutral-300">User not found</p>;
+    return <p className="text-sm text-neutral-700">User not found</p>;
   }
 
   const isOwner = user?.username === profile.username;
@@ -101,7 +101,7 @@ export function ProfileView({ username }: { username: string }) {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <Card className="animate-rise-in relative grid gap-8 overflow-hidden p-6 sm:grid-cols-[auto_1fr] sm:items-start sm:p-8">
-        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-white/8 text-3xl font-semibold text-neutral-300">
+        <div className="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-neutral-200 bg-neutral-100 text-3xl font-semibold text-neutral-700">
           {profile.avatarUrl ? (
             <img src={profile.avatarUrl} alt={profile.name} className="h-full w-full object-cover" />
           ) : (
@@ -110,15 +110,15 @@ export function ProfileView({ username }: { username: string }) {
         </div>
         <div className="relative space-y-4">
           <div className="space-y-1">
-            <h1 className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">{profile.name}</h1>
-            <p className="text-sm text-neutral-400">@{profile.username}</p>
+            <h1 className="font-display text-4xl font-semibold tracking-tight text-black sm:text-5xl">{profile.name}</h1>
+            <p className="text-sm text-neutral-500">@{profile.username}</p>
           </div>
-          <div className="flex gap-6 text-sm text-neutral-300">
+          <div className="flex gap-6 text-sm text-neutral-700">
             <p>{profile.followersCount} followers</p>
             <p>{profile.followingCount} following</p>
           </div>
-          <p className="max-w-2xl text-sm leading-7 text-neutral-300">{profile.bio || "This user has not added a bio yet."}</p>
-          <p className="text-sm text-neutral-400">Joined {formatDate(profile.createdAt)}</p>
+          <p className="max-w-2xl text-sm leading-7 text-neutral-700">{profile.bio || "This user has not added a bio yet."}</p>
+          <p className="text-sm text-neutral-500">Joined {formatDate(profile.createdAt)}</p>
           <div className="flex gap-3">
             {isOwner ? (
               <Link href="/profile/edit">
@@ -130,31 +130,31 @@ export function ProfileView({ username }: { username: string }) {
               </Button>
             )}
           </div>
-          {error ? <p className="text-sm text-neutral-300">{error}</p> : null}
+          {error ? <p className="text-sm text-neutral-700">{error}</p> : null}
         </div>
       </Card>
 
       <section className="space-y-4">
-        <h2 className="font-display text-3xl text-white">Posts</h2>
+        <h2 className="font-display text-3xl text-black">Posts</h2>
         {profile.posts.length ? (
           <div className="space-y-4">
             {profile.posts.map((post, index) => (
               <Card
                 key={post.slug}
-                className="animate-stagger-in space-y-3 p-6 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-indigo-400/40 hover:shadow-lg sm:p-7"
+                className="animate-stagger-in space-y-3 p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-7"
                 style={{ ["--stagger-delay" as "--stagger-delay"]: `${Math.min(index * 100, 500)}ms` } as React.CSSProperties}
               >
-                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-white">
+                <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-black">
                   {post.title}
                 </Link>
-                <p className="text-sm leading-7 text-neutral-300">{post.excerpt}</p>
-                <p className="text-sm text-neutral-400">{formatDate(post.createdAt)}</p>
+                <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
+                <p className="text-sm text-neutral-500">{formatDate(post.createdAt)}</p>
               </Card>
             ))}
           </div>
         ) : (
           <Card className="p-8 text-center">
-            <p className="text-sm text-neutral-400">No posts available.</p>
+            <p className="text-sm text-neutral-500">No posts available.</p>
           </Card>
         )}
       </section>

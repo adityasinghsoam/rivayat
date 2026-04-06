@@ -183,29 +183,29 @@ export function PostEditorForm({ initialValue }: { initialValue?: EditorPayload 
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-white">Title</label>
+          <label className="text-sm font-medium text-neutral-900">Title</label>
           <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="A title that carries weight" />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-white">Content</label>
+          <label className="text-sm font-medium text-neutral-900">Content</label>
           <RichTextEditor value={content} onChange={setContent} />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-white">Tags</label>
+          <label className="text-sm font-medium text-neutral-900">Tags</label>
           <Input value={tags} onChange={(event) => setTags(event.target.value)} placeholder="poetry, monsoon, memory" />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-white">Language</label>
+          <label className="text-sm font-medium text-neutral-900">Language</label>
           <select
             value={language}
             onChange={(event) => setLanguage(event.target.value as "ENGLISH" | "HINDI")}
-            className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white shadow-[0_8px_24px_rgba(2,6,23,0.22)] backdrop-blur-md transition-all duration-200 focus:border-indigo-400/60 focus:outline-none focus:ring-2 focus:ring-indigo-400/35"
+            className="w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 transition-all duration-200 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-300"
           >
             <option value="ENGLISH">English</option>
             <option value="HINDI">Hindi</option>
           </select>
         </div>
-        {error ? <p className="text-sm text-neutral-300">{error}</p> : null}
+        {error ? <p className="text-sm text-neutral-700">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
           <Button variant="secondary" type="button" disabled={busyAction !== null} onClick={() => void persistPost(false)}>
             {busyAction === "draft" ? "Saving draft..." : "Save Draft"}

@@ -83,24 +83,24 @@ export function NotificationBell() {
       <Button variant="ghost" className="group relative rounded-full px-3" onClick={toggleOpen}>
         <Bell size={18} className="transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110" />
         {unreadCount > 0 ? (
-          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-500 px-1 text-[10px] font-semibold text-white">
+          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
             {unreadCount}
           </span>
         ) : null}
       </Button>
       {open ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-80 rounded-3xl border border-white/10 bg-slate-950/78 p-4 shadow-[0_24px_60px_rgba(2,6,23,0.58)] backdrop-blur-lg">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-30 w-80 rounded-3xl border border-neutral-200 bg-white p-4 shadow-md">
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-white">Notifications</p>
+            <p className="text-sm font-semibold text-neutral-900">Notifications</p>
             {notifications.length ? (
               notifications.map((notification) => (
                 <Link
                   key={notification.id}
                   href={notificationHref(notification)}
-                  className="block rounded-2xl border border-transparent p-3 transition-all duration-200 hover:border-indigo-400/30 hover:bg-white/6"
+                  className="block rounded-2xl border border-transparent p-3 transition-colors duration-200 hover:border-neutral-200 hover:bg-neutral-50"
                   onClick={() => setOpen(false)}
                 >
-                  <p className="text-sm text-neutral-200">{notificationLabel(notification)}</p>
+                  <p className="text-sm text-neutral-700">{notificationLabel(notification)}</p>
                   <p className="text-xs text-neutral-400">
                     {new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(notification.createdAt))}
                   </p>

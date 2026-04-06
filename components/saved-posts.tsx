@@ -42,18 +42,18 @@ export function SavedPosts() {
   }, []);
 
   if (loading) {
-    return <p className="text-sm text-neutral-400">Loading saved posts...</p>;
+    return <p className="text-sm text-neutral-500">Loading saved posts...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-rose-300">{error}</p>;
+    return <p className="text-sm text-neutral-700">{error}</p>;
   }
 
   if (!bookmarks.length) {
     return (
       <Card className="p-8 text-center">
-        <p className="font-display text-3xl text-white">No saved posts yet</p>
-        <p className="mt-2 text-sm text-neutral-400">Save posts to read them later</p>
+        <p className="font-display text-3xl text-black">No saved posts yet</p>
+        <p className="mt-2 text-sm text-neutral-500">Save posts to read them later</p>
       </Card>
     );
   }
@@ -63,16 +63,14 @@ export function SavedPosts() {
       {bookmarks.map((bookmark) => (
         <Card key={bookmark.id} className="flex flex-col gap-3 p-6">
           <Link href={`/post/${bookmark.post.slug}` as Route} className="block">
-            <h2 className="bg-gradient-to-r from-white to-violet-200 bg-clip-text font-display text-2xl leading-tight text-transparent">
-              {bookmark.post.title}
-            </h2>
+            <h2 className="font-display text-2xl leading-tight text-black">{bookmark.post.title}</h2>
           </Link>
-          <p className="text-sm leading-8 text-neutral-300">{bookmark.post.excerpt}</p>
-          <p className="text-sm text-neutral-400">
-            <Link href={`/profile/${bookmark.post.author.username}` as Route} className="font-medium text-neutral-200">
+          <p className="text-sm leading-8 text-neutral-700">{bookmark.post.excerpt}</p>
+          <p className="text-sm text-neutral-500">
+            <Link href={`/profile/${bookmark.post.author.username}` as Route} className="font-medium text-neutral-900">
               {bookmark.post.author.name}
-            </Link>{" · "}
-            {formatDate(bookmark.post.createdAt)}
+            </Link>{" "}
+            · {formatDate(bookmark.post.createdAt)}
           </p>
         </Card>
       ))}

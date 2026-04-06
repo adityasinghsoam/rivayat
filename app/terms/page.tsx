@@ -5,7 +5,7 @@ export default function TermsPage() {
         <p className="text-sm uppercase tracking-[0.22em] text-neutral-500">Terms</p>
         <h1 className="font-display text-4xl font-semibold text-black">Platform terms.</h1>
         <p className="text-base leading-8 text-neutral-700">
-          Writers remain responsible for the content they publish on Rivayat. Posts must respect copyright, privacy,
+          Writers remain responsible for the content they publish on Riwayat. Posts must respect copyright, privacy,
           and community standards. Platform features and policies may change as the product evolves.
         </p>
       </div>

@@ -1,6 +1,6 @@
-# Rivayat
+# Riwayat
 
-Rivayat is a Medium-like publishing platform for poetry and stories, built with Next.js App Router, TypeScript, Tailwind CSS, Prisma, PostgreSQL, and JWT cookie authentication.
+Riwayat is a Medium-like publishing platform for poetry and stories, built with Next.js App Router, TypeScript, Tailwind CSS, Prisma, PostgreSQL, and JWT cookie authentication.
 
 ## Features
 
@@ -26,7 +26,7 @@ Rivayat is a Medium-like publishing platform for poetry and stories, built with 
 Copy `.env.example` to `.env` and update the values:
 
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/rivayat?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/riwayat?schema=public"
 JWT_SECRET="replace-this-with-a-long-random-secret"
 ```
 

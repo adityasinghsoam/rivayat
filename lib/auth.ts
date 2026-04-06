@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/prisma";
 
-const AUTH_COOKIE = "rivayat_token";
+const AUTH_COOKIE = "riwayat_token";
 
 function getJwtSecret() {
   const secret = process.env.JWT_SECRET;

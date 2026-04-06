@@ -5,7 +5,7 @@ export default function SignupPage() {
   return (
     <div className="space-y-6 py-10">
       <div className="space-y-2 text-center">
-        <h1 className="font-display text-5xl text-black">Join Rivayat</h1>
+        <h1 className="font-display text-5xl text-black">Join Riwayat</h1>
         <p className="text-neutral-700">
           Create a home for your poems and stories. Already have an account?{" "}
           <Link href="/login" className="text-black transition hover:text-neutral-700">

@@ -216,7 +216,7 @@ export default async function HomePage() {
               A home for poetry and <span className="italic text-neutral-800">stories</span>
             </h1>
             <p className="max-w-2xl text-base leading-8 text-neutral-700 sm:text-lg">
-              Rivayat brings poems, essays, and stories into one calm reading experience built for writers who care
+              Riwayat brings poems, essays, and stories into one calm reading experience built for writers who care
               about craft and readers who make time for it.
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -237,7 +237,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Featured"
             title="Selected pieces worth settling into"
-            description="A short shelf of recent writing that sets the tone for Rivayat."
+            description="A short shelf of recent writing that sets the tone for Riwayat."
           />
           <div className="mt-6 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
             <div className="grid">
@@ -275,7 +275,7 @@ export default async function HomePage() {
               <>
                 <EmptyPanel title="Nothing here yet" description="Reader momentum will surface here as the library of posts grows." />
                 <EmptyPanel title="Popular posts" description="Views and likes help surface the writing readers are spending time with." />
-                <EmptyPanel title="Momentum builds here" description="Return after a few publications to see what is resonating across Rivayat." />
+                <EmptyPanel title="Momentum builds here" description="Return after a few publications to see what is resonating across Riwayat." />
               </>
             )}
           </div>
@@ -286,7 +286,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-5xl px-4 py-10">
           <SectionHeading
             eyebrow="Latest posts"
-            title="Fresh writing from across Rivayat"
+            title="Fresh writing from across Riwayat"
             description="A steady feed of newly published work from poets and storytellers."
           />
           <div className="mt-6">

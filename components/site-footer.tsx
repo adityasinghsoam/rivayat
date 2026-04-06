@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="border-t border-neutral-200 bg-white">
       <div className="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <p className="font-display text-2xl text-black">Rivayat</p>
+          <p className="font-display text-2xl text-black">Riwayat</p>
           <p className="text-xs tracking-[0.08em] text-neutral-500">A quiet space for stories that matter.</p>
         </div>
         <nav className="flex flex-wrap gap-5 text-xs tracking-[0.08em] text-neutral-500">

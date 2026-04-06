@@ -34,7 +34,7 @@ export function SiteHeader() {
       <ScrollProgress />
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-6 px-4 py-4">
         <Link href="/" className="font-display text-3xl italic tracking-tight text-black transition-colors duration-200 hover:text-neutral-700">
-          Rivayat
+          Riwayat
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

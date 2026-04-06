@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
 export const metadata: Metadata = {
-  title: "Rivayat",
+  title: "Riwayat",
   description: "A home for poetry and stories in English and Hindi.",
 };
 

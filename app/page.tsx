@@ -114,26 +114,42 @@ function SectionHeading({
   description: string;
 }) {
   return (
-    <div className="space-y-3">
-      <p className="text-sm uppercase tracking-[0.22em] text-neutral-500">{eyebrow}</p>
-      <div className="space-y-2">
-        <h2 className="font-display text-2xl font-semibold text-black sm:text-3xl">{title}</h2>
-        <p className="max-w-2xl text-base leading-7 text-neutral-700">{description}</p>
-      </div>
+    <div className="space-y-2">
+      <p className="text-xs uppercase tracking-[0.24em] text-neutral-500">{eyebrow}</p>
+      <h2 className="font-display text-2xl font-semibold text-black sm:text-[2rem]">{title}</h2>
+      <p className="max-w-2xl text-base leading-7 text-neutral-700">{description}</p>
     </div>
+  );
+}
+
+function EmptyPanel({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <Card className="flex min-h-[220px] flex-col justify-between p-6">
+      <div className="space-y-3">
+        <div className="h-10 w-10 rounded-full border border-neutral-200 bg-neutral-50" />
+        <p className="font-display text-2xl text-black">{title}</p>
+        <p className="text-sm leading-7 text-neutral-600">{description}</p>
+      </div>
+    </Card>
   );
 }
 
 function FeaturedCard({ post, priority = false }: { post: HomePost; priority?: boolean }) {
   return (
-    <Card className={priority ? "flex h-full flex-col gap-5 p-8" : "flex h-full flex-col gap-4 p-6"}>
+    <Card className={priority ? "flex h-full flex-col gap-5 p-7" : "flex h-full flex-col gap-4 p-6"}>
       <div className="flex flex-wrap items-center gap-2">
         {post.tags.slice(0, 2).map((tag) => (
           <Badge key={tag}>#{tag}</Badge>
         ))}
       </div>
       <div className="space-y-3">
-        <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold leading-tight tracking-tight text-black sm:text-3xl">
+        <Link href={`/post/${post.slug}` as Route} className="block font-display text-2xl font-semibold leading-tight tracking-tight text-black sm:text-[2rem]">
           {post.title}
         </Link>
         <p className="text-sm leading-7 text-neutral-700">{post.excerpt}</p>
@@ -178,21 +194,21 @@ export default async function HomePage() {
   const { storyCount, featuredPosts, trendingPosts } = await getHomeSections();
 
   return (
-    <div className="pb-16">
-      <section className="border-b border-neutral-200 bg-neutral-50">
-        <div className="mx-auto max-w-5xl px-4 py-16">
-          <div className="max-w-3xl space-y-6">
+    <div>
+      <section className="border-b border-neutral-200 bg-[linear-gradient(180deg,#fafafa_0%,#ffffff_100%)]">
+        <div className="mx-auto max-w-5xl px-4 py-12">
+          <div className="max-w-3xl space-y-5">
             <Badge>Trusted space for thoughtful writing</Badge>
-            <h1 className="font-display text-4xl font-semibold leading-tight tracking-tight text-black sm:text-5xl">
+            <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[1.05] tracking-tight text-black sm:text-6xl">
               A home for poetry and stories
             </h1>
             <p className="max-w-2xl text-base leading-8 text-neutral-700 sm:text-lg">
               Rivayat brings poems, essays, and stories into one calm reading experience built for writers who care
               about craft and readers who make time for it.
             </p>
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4 pt-1">
               <Link href="/write">
-                <Button>Start Writing</Button>
+                <Button className="px-6 py-3 text-base transition-all duration-200 hover:-translate-y-0.5">Start Writing</Button>
               </Link>
               <p className="text-sm text-neutral-500">{storyCount}+ stories shared</p>
             </div>
@@ -200,49 +216,68 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-16">
-        <SectionHeading
-          eyebrow="Featured"
-          title="Selected pieces worth settling into"
-          description="A short shelf of recent writing that sets the tone for Rivayat."
-        />
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <div className="grid">
-            {featuredPosts[0] ? <FeaturedCard post={featuredPosts[0]} priority /> : null}
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-            {featuredPosts.slice(1).map((post) => (
-              <FeaturedCard key={post.id} post={post} />
-            ))}
+      <section className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Featured"
+            title="Selected pieces worth settling into"
+            description="A short shelf of recent writing that sets the tone for Rivayat."
+          />
+          <div className="mt-6 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+            <div className="grid">
+              {featuredPosts[0] ? (
+                <FeaturedCard post={featuredPosts[0]} priority />
+              ) : (
+                <EmptyPanel title="No featured posts yet" description="Publish a few stories and Rivayat will begin surfacing standout pieces here." />
+              )}
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
+              {featuredPosts.slice(1).length ? (
+                featuredPosts.slice(1).map((post) => <FeaturedCard key={post.id} post={post} />)
+              ) : (
+                <>
+                  <EmptyPanel title="Room for more writing" description="Featured shelves fill out as new stories are published." />
+                  <EmptyPanel title="Curated selections" description="This space highlights strong recent work for returning readers." />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="trending" className="border-y border-neutral-200 bg-neutral-50">
-        <div className="mx-auto max-w-5xl px-4 py-16">
+      <section id="trending" className="border-t border-b border-neutral-200 bg-neutral-50">
+        <div className="mx-auto max-w-5xl px-4 py-10">
           <SectionHeading
             eyebrow="Popular posts"
             title="Trending today"
             description="Stories readers are opening, liking, and passing around right now."
           />
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {trendingPosts.slice(0, 3).map((post, index) => (
-              <TrendingCard key={post.id} post={post} index={index} />
-            ))}
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {trendingPosts.slice(0, 3).length ? (
+              trendingPosts.slice(0, 3).map((post, index) => <TrendingCard key={post.id} post={post} index={index} />)
+            ) : (
+              <>
+                <EmptyPanel title="No trending posts yet" description="Once readers start engaging with stories, the most active pieces will appear here." />
+                <EmptyPanel title="Popular posts" description="Views and likes help surface the writing readers are spending time with." />
+                <EmptyPanel title="Momentum builds here" description="Return after a few publications to see what is resonating across Rivayat." />
+              </>
+            )}
           </div>
         </div>
       </section>
 
-      <section id="latest" className="mx-auto max-w-5xl px-4 py-16">
-        <SectionHeading
-          eyebrow="Latest posts"
-          title="Fresh writing from across Rivayat"
-          description="A steady feed of newly published work from poets and storytellers."
-        />
-        <div className="mt-8">
-          <Suspense fallback={<p className="text-sm text-neutral-500">Loading posts...</p>}>
-            <HomeFeed />
-          </Suspense>
+      <section id="latest" className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Latest posts"
+            title="Fresh writing from across Rivayat"
+            description="A steady feed of newly published work from poets and storytellers."
+          />
+          <div className="mt-6">
+            <Suspense fallback={<p className="text-sm text-neutral-500">Loading posts...</p>}>
+              <HomeFeed />
+            </Suspense>
+          </div>
         </div>
       </section>
     </div>

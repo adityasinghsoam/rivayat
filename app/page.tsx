@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { HomeFeed } from "@/components/home-feed";
-import { formatDate, getReadTimeMinutes } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 type HomePost = {
   id: string;
@@ -23,11 +23,31 @@ type HomePost = {
   _count: {
     likes: number;
   };
-  readTime: number;
 };
 
+type HighlightAuthor = {
+  id: string;
+  name: string;
+  username: string;
+  bio: string | null;
+  _count: {
+    posts: number;
+  };
+};
+
+const MOOD_CATEGORIES = ["Love", "Heartbreak", "Motivation", "Dark", "Short Reads"] as const;
+
+function createExcerpt(excerpt: string, title: string, maxLength = 180) {
+  const source = excerpt.trim() || title.trim();
+  if (source.length <= maxLength) {
+    return source;
+  }
+
+  return `${source.slice(0, maxLength).trimEnd()}...`;
+}
+
 async function getHomeSections() {
-  const [storyCount, featuredRaw, trendingRaw] = await Promise.all([
+  const [storyCount, featuredRaw, trendingRaw, authors] = await Promise.all([
     prisma.post.count({
       where: {
         isPublished: true,
@@ -47,7 +67,6 @@ async function getHomeSections() {
         createdAt: true,
         views: true,
         tags: true,
-        content: true,
         _count: {
           select: {
             likes: true,
@@ -75,7 +94,6 @@ async function getHomeSections() {
         createdAt: true,
         views: true,
         tags: true,
-        content: true,
         _count: {
           select: {
             likes: true,
@@ -89,18 +107,49 @@ async function getHomeSections() {
         },
       },
     }),
+    prisma.user.findMany({
+      where: {
+        posts: {
+          some: {
+            isPublished: true,
+          },
+        },
+      },
+      take: 3,
+      orderBy: {
+        posts: {
+          _count: "desc",
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        username: true,
+        bio: true,
+        _count: {
+          select: {
+            posts: {
+              where: {
+                isPublished: true,
+              },
+            },
+          },
+        },
+      },
+    }),
   ]);
 
   const mapPosts = (posts: typeof featuredRaw): HomePost[] =>
     posts.map((post) => ({
       ...post,
-      readTime: getReadTimeMinutes(post.content),
+      excerpt: createExcerpt(post.excerpt, post.title),
     }));
 
   return {
     storyCount,
     featuredPosts: mapPosts(featuredRaw),
     trendingPosts: mapPosts(trendingRaw).sort((a, b) => b._count.likes + b.views - (a._count.likes + a.views)),
+    authors,
   };
 }
 
@@ -169,8 +218,6 @@ function FeaturedCard({ post, priority = false }: { post: HomePost; priority?: b
           </Link>
           <span>·</span>
           <span>{formatDate(post.createdAt)}</span>
-          <span>·</span>
-          <span>{post.readTime} min read</span>
         </div>
       </div>
     </Card>
@@ -203,8 +250,30 @@ function TrendingCard({ post, index }: { post: HomePost; index: number }) {
   );
 }
 
+function AuthorHighlightCard({ author }: { author: HighlightAuthor }) {
+  return (
+    <Card className="flex h-full flex-col gap-4 p-6">
+      <div className="space-y-2">
+        <Link href={`/profile/${author.username}` as Route} className="font-display text-2xl text-black transition-colors hover:text-neutral-700">
+          {author.name}
+        </Link>
+        <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">@{author.username}</p>
+      </div>
+      <p className="min-h-[72px] text-sm leading-7 text-neutral-700">
+        {author.bio?.trim() || "Writer in progress. New stories and quiet reflections added every week."}
+      </p>
+      <div className="mt-auto flex items-center justify-between">
+        <p className="text-xs tracking-[0.08em] text-neutral-500">{author._count.posts} published stories</p>
+        <Button variant="ghost" type="button" className="px-3 py-1.5 text-sm">
+          Follow
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
 export default async function HomePage() {
-  const { storyCount, featuredPosts, trendingPosts } = await getHomeSections();
+  const { storyCount, featuredPosts, trendingPosts, authors } = await getHomeSections();
 
   return (
     <div>
@@ -221,7 +290,12 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link href="/write">
-                <Button className="px-6 py-3 text-base hover:bg-neutral-900">Start Writing</Button>
+                <Button className="px-6 py-3 text-base hover:bg-neutral-900">Write your first story in minutes</Button>
+              </Link>
+              <Link href="/#latest">
+                <Button variant="ghost" className="px-6 py-3 text-base">
+                  Explore stories
+                </Button>
               </Link>
               <p className="text-sm text-neutral-500">{storyCount}+ stories shared</p>
             </div>
@@ -261,6 +335,25 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Find your mood"
+            title="Browse by category"
+            description="Jump into stories that match what you want to feel right now."
+          />
+          <div className="mt-6 flex flex-wrap gap-3">
+            {MOOD_CATEGORIES.map((category) => (
+              <Link key={category} href={`/?tag=${encodeURIComponent(category)}` as Route}>
+                <Badge className="cursor-pointer px-4 py-2 text-sm transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900">
+                  {category}
+                </Badge>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="trending" className="border-t border-b border-neutral-200 bg-neutral-50">
         <div className="mx-auto max-w-5xl px-4 py-10">
           <SectionHeading
@@ -279,6 +372,50 @@ export default async function HomePage() {
               </>
             )}
           </div>
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Author highlights"
+            title="Writers readers keep returning to"
+            description="Three voices building depth and consistency across the Riwayat library."
+          />
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {authors.length ? (
+              authors.map((author) => <AuthorHighlightCard key={author.id} author={author} />)
+            ) : (
+              <>
+                <EmptyPanel title="Writers will appear here" description="As soon as stories are published, standout authors will be highlighted in this section." />
+                <EmptyPanel title="Discover new voices" description="Follow along with recurring authors and their evolving themes over time." />
+                <EmptyPanel title="Reader favorites" description="This section surfaces creators with growing reader momentum and consistency." />
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-neutral-50">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Reading experience"
+            title="A clean, immersive reading flow"
+            description="Typography and spacing are tuned to keep long-form reading calm and focused."
+          />
+          <Card className="mt-6 p-7 sm:p-9">
+            <article className="prose prose-neutral max-w-none">
+              <h3>The city slept, but the page stayed awake</h3>
+              <p>
+                You open a story and the noise falls away. Short lines breathe, longer passages settle, and every paragraph
+                moves at a pace that feels deliberate. This preview mirrors the same reading-first layout used across posts.
+              </p>
+              <p>
+                <strong>Minimal distractions.</strong> Generous spacing. Familiar typography. Built so the writing stays in
+                front and everything else steps back.
+              </p>
+            </article>
+          </Card>
         </div>
       </section>
 

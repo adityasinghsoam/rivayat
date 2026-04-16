@@ -186,10 +186,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
+  let requestBody: unknown;
+
   try {
     const user = await requireUser();
-    const json = await request.json();
-    const data = postSchema.parse(json);
+    requestBody = await request.json();
+    const data = postSchema.parse(requestBody);
     const baseSlug = makeSlug(data.title);
 
     if (!baseSlug) {
@@ -225,7 +227,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ post }, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
-      return NextResponse.json({ error: error.issues[0]?.message ?? "Invalid post data." }, { status: 400 });
+      console.error("[POST /api/posts] Validation failed", {
+        body: requestBody,
+        issues: error.issues,
+      });
+      return NextResponse.json(
+        {
+          error: error.issues[0]?.message ?? "Invalid post data.",
+          details: error.issues,
+        },
+        { status: 400 },
+      );
     }
 
     if (error instanceof SyntaxError) {

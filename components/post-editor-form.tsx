@@ -8,13 +8,15 @@ import { trackEvent } from "@/lib/analytics";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/rich-text-editor";
-import { makeExcerpt, stripHtml } from "@/lib/utils";
+import { normalizeExcerpt, stripHtml } from "@/lib/utils";
 
 type EditorPayload = {
   id?: string;
   title: string;
   content: string;
+  excerpt?: string;
   tags: string[];
   language: "ENGLISH" | "HINDI";
   isPublished?: boolean;
@@ -28,6 +30,7 @@ export function PostEditorForm({ initialValue }: { initialValue?: EditorPayload 
   const [postId, setPostId] = useState(initialValue?.id ?? null);
   const [title, setTitle] = useState(initialValue?.title ?? "");
   const [content, setContent] = useState(initialValue?.content ?? "");
+  const [excerpt, setExcerpt] = useState(initialValue?.excerpt ?? "");
   const [tags, setTags] = useState(initialValue?.tags.join(", ") ?? "");
   const [language, setLanguage] = useState<"ENGLISH" | "HINDI">(initialValue?.language ?? "ENGLISH");
   const [busyAction, setBusyAction] = useState<"draft" | "publish" | null>(null);
@@ -40,15 +43,17 @@ export function PostEditorForm({ initialValue }: { initialValue?: EditorPayload 
     () => ({
       title,
       content,
-      excerpt: makeExcerpt(content),
+      excerpt: normalizeExcerpt(excerpt, content),
       tags: tags
         .split(",")
         .map((tag) => tag.trim().toLowerCase())
         .filter(Boolean),
       language,
     }),
-    [title, content, tags, language],
+    [title, content, excerpt, tags, language],
   );
+
+  const excerptLength = stripHtml(excerpt).trim().length;
 
   const currentSnapshot = JSON.stringify({
     ...payload,
@@ -189,6 +194,19 @@ export function PostEditorForm({ initialValue }: { initialValue?: EditorPayload 
         <div className="space-y-2">
           <label className="text-sm font-medium text-neutral-900">Content</label>
           <RichTextEditor value={content} onChange={setContent} />
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <label className="text-sm font-medium text-neutral-900">Excerpt</label>
+            <p className="text-xs text-neutral-400">{Math.min(excerptLength, 180)}/180</p>
+          </div>
+          <Textarea
+            value={excerpt}
+            maxLength={180}
+            onChange={(event) => setExcerpt(stripHtml(event.target.value))}
+            placeholder="Leave blank to auto-generate from the first 150 characters of your content"
+          />
+          <p className="text-xs text-neutral-400">If empty, an excerpt is generated from the first 150 plain-text characters of the content.</p>
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium text-neutral-900">Tags</label>

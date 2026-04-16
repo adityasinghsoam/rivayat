@@ -21,7 +21,7 @@ export const loginSchema = z.object({
 export const postSchema = z.object({
   title: z.string().trim().min(1, "Title is required.").max(160, "Title must be 160 characters or fewer."),
   content: z.string().trim().min(1, "Content is required."),
-  excerpt: z.string().trim().max(180, "Excerpt must be 180 characters or fewer.").optional(),
+  excerpt: z.string().trim().max(180, "Excerpt must be 180 characters or fewer. Leave it blank to generate one from the content.").optional(),
   tags: z.array(z.string().min(1).max(24)).max(6),
   language: z.enum(["ENGLISH", "HINDI"]),
   isPublished: z.boolean().optional(),

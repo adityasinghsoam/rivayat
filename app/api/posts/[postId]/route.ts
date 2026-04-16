@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, requireUser } from "@/lib/auth";
-import { getReadTimeMinutes, makeExcerpt, makeSlug } from "@/lib/utils";
+import { getReadTimeMinutes, makeSlug, normalizeExcerpt } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
 export async function GET(
@@ -201,7 +202,7 @@ export async function PATCH(
         title: data.title,
         slug,
         content: data.content,
-        excerpt: makeExcerpt(data.content),
+        excerpt: normalizeExcerpt(data.excerpt ?? "", data.content),
         tags: data.tags,
         language: data.language,
         isPublished: data.isPublished ?? existing.isPublished,
@@ -213,9 +214,11 @@ export async function PATCH(
     const message =
       error instanceof Error && error.message === "UNAUTHORIZED"
         ? "Please log in."
-        : error instanceof Error
-          ? error.message
-          : "Unable to update post";
+        : error instanceof ZodError
+          ? error.issues[0]?.message ?? "Invalid post data."
+          : error instanceof Error
+            ? error.message
+            : "Unable to update post";
     const status = error instanceof Error && error.message === "UNAUTHORIZED" ? 401 : 400;
     return NextResponse.json({ error: message }, { status });
   }

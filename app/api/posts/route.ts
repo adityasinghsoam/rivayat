@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, requireUser } from "@/lib/auth";
 import { logAction } from "@/lib/action-log";
-import { getReadTimeMinutes, makeExcerpt, makeSlug } from "@/lib/utils";
+import { getReadTimeMinutes, makeSlug, normalizeExcerpt } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
 export async function GET(request: NextRequest) {
@@ -211,7 +211,7 @@ export async function POST(request: Request) {
         title: data.title,
         slug,
         content: data.content,
-        excerpt: data.excerpt?.trim() || makeExcerpt(data.content),
+        excerpt: normalizeExcerpt(data.excerpt ?? "", data.content),
         tags: data.tags,
         language: data.language,
         isPublished: data.isPublished ?? false,

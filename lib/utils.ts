@@ -14,9 +14,20 @@ export function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export function makeExcerpt(content: string) {
+export function normalizeExcerpt(excerpt: string, content: string, fallbackLength = 150, maxLength = 180) {
+  const trimmedExcerpt = stripHtml(excerpt).trim();
+
+  if (trimmedExcerpt && trimmedExcerpt.length <= maxLength) {
+    return trimmedExcerpt.slice(0, maxLength);
+  }
+
+  const plainContent = stripHtml(content);
+  return plainContent.slice(0, Math.min(fallbackLength, maxLength)).trim();
+}
+
+export function makeExcerpt(content: string, maxLength = 180) {
   const plain = stripHtml(content);
-  return plain.slice(0, 180) + (plain.length > 180 ? "..." : "");
+  return plain.slice(0, maxLength).trim();
 }
 
 export function getReadTimeMinutes(content: string) {

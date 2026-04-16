@@ -10,6 +10,7 @@ import { LikeButton } from "@/components/post-interactions";
 import { CommentsSection } from "@/components/comments-section";
 import { Button } from "@/components/ui/button";
 import { DeletePostButton } from "@/components/delete-post-button";
+import { sanitizeRichText } from "@/lib/sanitize-html";
 
 export default async function PostDetailsPage({
   params,
@@ -60,6 +61,7 @@ export default async function PostDetailsPage({
   }
 
   const isAuthor = user?.id === post.author.id;
+  const sanitizedContent = sanitizeRichText(post.content);
 
   return (
     <article className="mx-auto max-w-4xl space-y-8">
@@ -92,7 +94,7 @@ export default async function PostDetailsPage({
       </div>
 
       <Card className="p-8">
-        <div className="prose prose-lg max-w-none text-neutral-700" dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className="prose prose-lg max-w-none text-neutral-700" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
       </Card>
 
       <section className="space-y-5">

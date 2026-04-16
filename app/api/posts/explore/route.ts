@@ -121,8 +121,14 @@ export async function GET(request: NextRequest) {
 
     console.log("[Explore API] Returned posts:", paginatedPosts.length);
 
+    const emptyStateMessage = query
+      ? "No posts found for this search."
+      : tag
+        ? `No stories found for #${tag} yet. Try another mood or publish the first one.`
+        : null;
+
     return NextResponse.json({
-      emptyStateMessage: query ? "No posts found" : null,
+      emptyStateMessage,
       nextCursor: hasMore ? paginatedPosts[paginatedPosts.length - 1]?.id ?? null : null,
       posts: paginatedPosts.map((post) => ({
         id: post.id,

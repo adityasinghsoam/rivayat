@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { FollowToggleButton } from "@/components/follow-toggle-button";
 import { HomeFeed } from "@/components/home-feed";
 import { formatDate } from "@/lib/utils";
 
@@ -25,11 +26,14 @@ type HomePost = {
   };
 };
 
+type MoodCategory = (typeof MOOD_CATEGORIES)[number];
+
 type HighlightAuthor = {
   id: string;
   name: string;
   username: string;
   bio: string | null;
+  avatarUrl: string | null;
   _count: {
     posts: number;
   };
@@ -47,7 +51,10 @@ function createExcerpt(excerpt: string, title: string, maxLength = 180) {
 }
 
 async function getHomeSections() {
-  const [storyCount, featuredRaw, trendingRaw, authors] = await Promise.all([
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const now = Date.now();
+
+  const [storyCount, featuredRaw, trendingRaw, authors, categoryCountsRaw] = await Promise.all([
     prisma.post.count({
       where: {
         isPublished: true,
@@ -83,9 +90,12 @@ async function getHomeSections() {
     prisma.post.findMany({
       where: {
         isPublished: true,
+        createdAt: {
+          gte: weekAgo,
+        },
       },
-      take: 5,
-      orderBy: [{ views: "desc" }, { createdAt: "desc" }],
+      take: 20,
+      orderBy: [{ createdAt: "desc" }],
       select: {
         id: true,
         title: true,
@@ -126,6 +136,7 @@ async function getHomeSections() {
         name: true,
         username: true,
         bio: true,
+        avatarUrl: true,
         _count: {
           select: {
             posts: {
@@ -137,6 +148,18 @@ async function getHomeSections() {
         },
       },
     }),
+    prisma.post.findMany({
+      where: {
+        isPublished: true,
+      },
+      take: 100,
+      select: {
+        tags: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
   ]);
 
   const mapPosts = (posts: typeof featuredRaw): HomePost[] =>
@@ -145,11 +168,187 @@ async function getHomeSections() {
       excerpt: createExcerpt(post.excerpt, post.title),
     }));
 
+  const featuredPosts = mapPosts(featuredRaw);
+  const trendingPosts = mapPosts(trendingRaw)
+    .sort((a, b) => {
+      const hoursA = Math.max((now - a.createdAt.getTime()) / (1000 * 60 * 60), 1);
+      const hoursB = Math.max((now - b.createdAt.getTime()) / (1000 * 60 * 60), 1);
+      const scoreA = (a._count.likes + a.views) / hoursA;
+      const scoreB = (b._count.likes + b.views) / hoursB;
+      return scoreB - scoreA;
+    })
+    .slice(0, 5);
+
+  const excludedIds = new Set([...featuredPosts, ...trendingPosts].map((post) => post.id));
+  const preferredTags = Array.from(new Set([...featuredPosts, ...trendingPosts].flatMap((post) => post.tags))).slice(0, 5);
+
+  const readNextCandidatePool = preferredTags.length
+    ? await prisma.post.findMany({
+        where: {
+          isPublished: true,
+          id: {
+            notIn: Array.from(excludedIds),
+          },
+          tags: {
+            hasSome: preferredTags,
+          },
+        },
+        take: 20,
+        orderBy: [{ createdAt: "desc" }],
+        select: {
+          id: true,
+          title: true,
+          excerpt: true,
+          slug: true,
+          createdAt: true,
+          views: true,
+          tags: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+          author: {
+            select: {
+              name: true,
+              username: true,
+            },
+          },
+        },
+      })
+    : [];
+
+  const readNextByTags = readNextCandidatePool
+    .map((post) => ({
+      post,
+      overlap: post.tags.reduce((count, tag) => count + (preferredTags.includes(tag) ? 1 : 0), 0),
+    }))
+    .filter((item) => item.overlap > 0)
+    .sort((a, b) => {
+      if (b.overlap !== a.overlap) {
+        return b.overlap - a.overlap;
+      }
+      return b.post.createdAt.getTime() - a.post.createdAt.getTime();
+    })
+    .slice(0, 3)
+    .map((item) => item.post);
+
+  const readNextFallback =
+    readNextByTags.length === 0
+      ? await prisma.post.findMany({
+          where: {
+            isPublished: true,
+            id: {
+              notIn: Array.from(excludedIds),
+            },
+          },
+          take: 3,
+          orderBy: [{ createdAt: "desc" }],
+          select: {
+            id: true,
+            title: true,
+            excerpt: true,
+            slug: true,
+            createdAt: true,
+            views: true,
+            tags: true,
+            _count: {
+              select: {
+                likes: true,
+              },
+            },
+            author: {
+              select: {
+                name: true,
+                username: true,
+              },
+            },
+          },
+        })
+      : [];
+
+  const readNextPosts = mapPosts(readNextByTags.length ? readNextByTags : readNextFallback).slice(0, 3);
+
+  const featuredAuthorIds = Array.from(new Set(featuredPosts.map((post) => post.author.username)));
+  const sameAuthorRaw =
+    featuredAuthorIds.length > 0
+      ? await prisma.post.findMany({
+          where: {
+            isPublished: true,
+            author: {
+              username: {
+                in: featuredAuthorIds,
+              },
+            },
+            id: {
+              notIn: featuredPosts.map((post) => post.id),
+            },
+          },
+          take: 24,
+          orderBy: [{ createdAt: "desc" }],
+          select: {
+            id: true,
+            title: true,
+            excerpt: true,
+            slug: true,
+            createdAt: true,
+            views: true,
+            tags: true,
+            _count: {
+              select: {
+                likes: true,
+              },
+            },
+            author: {
+              select: {
+                name: true,
+                username: true,
+              },
+            },
+          },
+        })
+      : [];
+
+  const sameAuthorPostsByAuthor = new Map<string, HomePost[]>();
+  for (const post of mapPosts(sameAuthorRaw)) {
+    const key = post.author.username;
+    const current = sameAuthorPostsByAuthor.get(key) ?? [];
+    if (current.length < 2) {
+      current.push(post);
+      sameAuthorPostsByAuthor.set(key, current);
+    }
+  }
+
+  const fromSameAuthor = featuredPosts.map((post) => ({
+    featured: post,
+    related: sameAuthorPostsByAuthor.get(post.author.username) ?? [],
+  }));
+
+  const categoryCounts = MOOD_CATEGORIES.reduce<Record<MoodCategory, number>>(
+    (accumulator, category) => {
+      accumulator[category] = 0;
+      return accumulator;
+    },
+    {} as Record<MoodCategory, number>,
+  );
+
+  for (const post of categoryCountsRaw) {
+    for (const tag of post.tags) {
+      const matchingCategory = MOOD_CATEGORIES.find((category) => category.toLowerCase() === tag.toLowerCase());
+      if (matchingCategory) {
+        categoryCounts[matchingCategory] += 1;
+      }
+    }
+  }
+
   return {
     storyCount,
-    featuredPosts: mapPosts(featuredRaw),
-    trendingPosts: mapPosts(trendingRaw).sort((a, b) => b._count.likes + b.views - (a._count.likes + a.views)),
+    featuredPosts,
+    trendingPosts,
+    readNextPosts,
+    fromSameAuthor,
     authors,
+    categoryCounts,
   };
 }
 
@@ -176,9 +375,11 @@ function SectionHeading({
 function EmptyPanel({
   title,
   description,
+  showCtas = false,
 }: {
   title: string;
   description: string;
+  showCtas?: boolean;
 }) {
   return (
     <Card className="flex min-h-[220px] flex-col justify-between p-6">
@@ -189,6 +390,18 @@ function EmptyPanel({
         <p className="font-display text-2xl text-black">{title}</p>
         <p className="max-w-sm text-sm leading-7 text-neutral-600">{description}</p>
       </div>
+      {showCtas ? (
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href="/write">
+            <Button className="px-4 py-2 text-sm">Write a story</Button>
+          </Link>
+          <Link href="/#latest">
+            <Button variant="ghost" className="px-4 py-2 text-sm">
+              Explore stories
+            </Button>
+          </Link>
+        </div>
+      ) : null}
     </Card>
   );
 }
@@ -251,29 +464,36 @@ function TrendingCard({ post, index }: { post: HomePost; index: number }) {
 }
 
 function AuthorHighlightCard({ author }: { author: HighlightAuthor }) {
+  const bio = author.bio?.trim() || "Writer in progress. New stories and quiet reflections added every week.";
+
   return (
     <Card className="flex h-full flex-col gap-4 p-6">
-      <div className="space-y-2">
-        <Link href={`/profile/${author.username}` as Route} className="font-display text-2xl text-black transition-colors hover:text-neutral-700">
-          {author.name}
-        </Link>
-        <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">@{author.username}</p>
+      <div className="flex items-start gap-4">
+        {author.avatarUrl ? (
+          <img src={author.avatarUrl} alt={author.name} className="h-12 w-12 rounded-full border border-neutral-200 object-cover" />
+        ) : (
+          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 bg-neutral-100 text-sm font-semibold text-neutral-700">
+            {author.name.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <div className="space-y-1">
+          <Link href={`/profile/${author.username}` as Route} className="font-display text-2xl text-black transition-colors hover:text-neutral-700">
+            {author.name}
+          </Link>
+          <p className="text-xs uppercase tracking-[0.14em] text-neutral-500">@{author.username}</p>
+        </div>
       </div>
-      <p className="min-h-[72px] text-sm leading-7 text-neutral-700">
-        {author.bio?.trim() || "Writer in progress. New stories and quiet reflections added every week."}
-      </p>
+      <p className="min-h-[72px] text-sm leading-7 text-neutral-700">{createExcerpt(bio, bio, 140)}</p>
       <div className="mt-auto flex items-center justify-between">
         <p className="text-xs tracking-[0.08em] text-neutral-500">{author._count.posts} published stories</p>
-        <Button variant="ghost" type="button" className="px-3 py-1.5 text-sm">
-          Follow
-        </Button>
+        <FollowToggleButton authorUsername={author.username} />
       </div>
     </Card>
   );
 }
 
 export default async function HomePage() {
-  const { storyCount, featuredPosts, trendingPosts, authors } = await getHomeSections();
+  const { storyCount, featuredPosts, trendingPosts, readNextPosts, fromSameAuthor, authors, categoryCounts } = await getHomeSections();
 
   return (
     <div>
@@ -318,7 +538,7 @@ export default async function HomePage() {
               {featuredPosts[0] ? (
                 <FeaturedCard post={featuredPosts[0]} priority />
               ) : (
-                <EmptyPanel title="Nothing here yet" description="A few published stories will give this shelf its shape and character." />
+                <EmptyPanel title="Nothing here yet" description="A few published stories will give this shelf its shape and character." showCtas />
               )}
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1">
@@ -326,7 +546,7 @@ export default async function HomePage() {
                 featuredPosts.slice(1).map((post) => <FeaturedCard key={post.id} post={post} />)
               ) : (
                 <>
-                  <EmptyPanel title="Room for more writing" description="Featured shelves fill out as new stories are published." />
+                  <EmptyPanel title="Room for more writing" description="Featured shelves fill out as new stories are published." showCtas />
                   <EmptyPanel title="Curated selections" description="This space highlights strong recent work for returning readers." />
                 </>
               )}
@@ -346,7 +566,7 @@ export default async function HomePage() {
             {MOOD_CATEGORIES.map((category) => (
               <Link key={category} href={`/?tag=${encodeURIComponent(category)}` as Route}>
                 <Badge className="cursor-pointer px-4 py-2 text-sm transition-colors hover:border-neutral-300 hover:bg-neutral-100 hover:text-neutral-900">
-                  {category}
+                  {category} ({categoryCounts[category]} recent stories)
                 </Badge>
               </Link>
             ))}
@@ -366,9 +586,71 @@ export default async function HomePage() {
               trendingPosts.slice(0, 3).map((post, index) => <TrendingCard key={post.id} post={post} index={index} />)
             ) : (
               <>
-                <EmptyPanel title="Nothing here yet" description="Reader momentum will surface here as the library of posts grows." />
+                <EmptyPanel title="Nothing trending this week" description="Trending uses a 7-day window. Publish fresh stories to start building momentum." showCtas />
                 <EmptyPanel title="Popular posts" description="Views and likes help surface the writing readers are spending time with." />
                 <EmptyPanel title="Momentum builds here" description="Return after a few publications to see what is resonating across Riwayat." />
+              </>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-neutral-50">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="From same author"
+            title="More from the writers you just discovered"
+            description="Continue with two more recent pieces from each featured author."
+          />
+          <div className="mt-6 space-y-5">
+            {fromSameAuthor.some((group) => group.related.length > 0) ? (
+              fromSameAuthor.map((group) =>
+                group.related.length > 0 ? (
+                  <Card key={group.featured.id} className="p-6">
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <p className="text-sm text-neutral-500">
+                        More from{" "}
+                        <Link href={`/profile/${group.featured.author.username}` as Route} className="font-medium text-neutral-900">
+                          {group.featured.author.name}
+                        </Link>
+                      </p>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {group.related.map((post) => (
+                        <Card key={post.id} className="p-4">
+                          <Link href={`/post/${post.slug}` as Route} className="block space-y-2">
+                            <p className="font-display text-xl text-black">{post.title}</p>
+                            <p className="text-sm leading-7 text-neutral-700">{createExcerpt(post.excerpt, post.title, 120)}</p>
+                          </Link>
+                          <p className="mt-3 text-xs tracking-[0.08em] text-neutral-500">{formatDate(post.createdAt)}</p>
+                        </Card>
+                      ))}
+                    </div>
+                  </Card>
+                ) : null,
+              )
+            ) : (
+              <EmptyPanel title="More from each author will appear here" description="As featured writers publish more, this section will connect related reads automatically." showCtas />
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-10">
+          <SectionHeading
+            eyebrow="Read next"
+            title="More stories picked for your next reading session"
+            description="Recommendations based on tags from featured and trending posts, with fresh fallbacks."
+          />
+          <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {readNextPosts.length ? (
+              readNextPosts.map((post) => <FeaturedCard key={post.id} post={post} />)
+            ) : (
+              <>
+                <EmptyPanel title="No recommendations yet" description="Once a few posts are published, we can suggest what to read next." showCtas />
+                <EmptyPanel title="Tag-based matching" description="Read Next prioritizes posts that share mood and theme with what readers already engage with." />
+                <EmptyPanel title="Fresh fallback stories" description="When matching tags are limited, recent posts fill this section to keep discovery active." />
               </>
             )}
           </div>
@@ -387,7 +669,7 @@ export default async function HomePage() {
               authors.map((author) => <AuthorHighlightCard key={author.id} author={author} />)
             ) : (
               <>
-                <EmptyPanel title="Writers will appear here" description="As soon as stories are published, standout authors will be highlighted in this section." />
+                <EmptyPanel title="Writers will appear here" description="As soon as stories are published, standout authors will be highlighted in this section." showCtas />
                 <EmptyPanel title="Discover new voices" description="Follow along with recurring authors and their evolving themes over time." />
                 <EmptyPanel title="Reader favorites" description="This section surfaces creators with growing reader momentum and consistency." />
               </>

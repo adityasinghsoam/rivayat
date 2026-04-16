@@ -1,4 +1,4 @@
-package com.example.app;
+package com.aditya.riwayat;
 
 import com.getcapacitor.BridgeActivity;
 

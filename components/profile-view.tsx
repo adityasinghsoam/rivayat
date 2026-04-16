@@ -68,6 +68,24 @@ export function ProfileView({ username }: { username: string }) {
       return;
     }
 
+    if (!profile) {
+      return;
+    }
+
+    const previousFollowing = profile.isFollowing;
+    const previousFollowersCount = profile.followersCount;
+    const nextFollowing = !previousFollowing;
+    const followerDelta = nextFollowing ? 1 : -1;
+
+    setProfile((current) =>
+      current
+        ? {
+            ...current,
+            isFollowing: nextFollowing,
+            followersCount: Math.max(0, current.followersCount + followerDelta),
+          }
+        : current,
+    );
     setFollowBusy(true);
     setError(null);
 
@@ -77,7 +95,7 @@ export function ProfileView({ username }: { username: string }) {
         followersCount: number;
         followingCount: number;
       }>(`/api/users/${username}/follow`, {
-        method: "POST",
+        method: previousFollowing ? "DELETE" : "POST",
       });
 
       setProfile((current) =>
@@ -92,6 +110,15 @@ export function ProfileView({ username }: { username: string }) {
       );
       trackEvent("follow_action", { following: data.isFollowing });
     } catch (err) {
+      setProfile((current) =>
+        current
+          ? {
+              ...current,
+              isFollowing: previousFollowing,
+              followersCount: previousFollowersCount,
+            }
+          : current,
+      );
       setError(err instanceof Error ? err.message : "Unable to update follow status.");
     } finally {
       setFollowBusy(false);

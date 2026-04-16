@@ -39,17 +39,34 @@ type PostDetailData = {
   };
 };
 
+type RecommendedPost = {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  tags: string[];
+  createdAt: string;
+  author: {
+    name: string;
+    username: string;
+  };
+};
+
 export function PostDetail({ slug }: { slug: string }) {
   const { user } = useAuth();
   const [post, setPost] = useState<PostDetailData | null>(null);
+  const [readNext, setReadNext] = useState<RecommendedPost[]>([]);
+  const [moreFromAuthor, setMoreFromAuthor] = useState<RecommendedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [readingMode, setReadingMode] = useState(false);
 
   useEffect(() => {
-    apiFetch<{ post: PostDetailData }>(`/api/posts/${slug}`)
+    apiFetch<{ post: PostDetailData; readNext: RecommendedPost[]; moreFromAuthor: RecommendedPost[] }>(`/api/posts/${slug}`)
       .then((data) => {
         setPost(data.post);
+        setReadNext(data.readNext);
+        setMoreFromAuthor(data.moreFromAuthor);
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : "Unable to load post.");
@@ -80,6 +97,45 @@ export function PostDetail({ slug }: { slug: string }) {
 
   if (!post) {
     return <p className="text-sm text-neutral-700">Post not found</p>;
+  }
+
+  function renderPostList(title: string, posts: RecommendedPost[]) {
+    if (!posts.length) {
+      return null;
+    }
+
+    return (
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{title}</p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {posts.map((entry) => (
+            <Card key={entry.id} className="space-y-4 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+              <div className="flex flex-wrap gap-2">
+                {entry.tags.slice(0, 3).map((tag) => (
+                  <Link key={`${entry.id}-${tag}`} href={`/?tag=${encodeURIComponent(tag)}` as Route}>
+                    <Badge>#{tag}</Badge>
+                  </Link>
+                ))}
+              </div>
+              <div className="space-y-2">
+                <Link href={`/post/${entry.slug}` as Route} className="block font-display text-2xl font-semibold tracking-tight text-black transition hover:text-neutral-700">
+                  {entry.title}
+                </Link>
+                <p className="text-sm leading-7 text-neutral-700">{entry.excerpt}</p>
+              </div>
+              <p className="text-sm text-neutral-500">
+                <Link href={`/profile/${entry.author.username}` as Route} className="font-medium text-neutral-700 transition hover:text-black">
+                  {entry.author.name}
+                </Link>{" "}
+                · {formatDate(entry.createdAt)}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -172,6 +228,9 @@ export function PostDetail({ slug }: { slug: string }) {
           </Card>
 
           <CommentsSection postId={post.id} />
+
+          {renderPostList("Read Next", readNext)}
+          {renderPostList(`More From ${post.author.name}`, moreFromAuthor)}
         </>
       ) : null}
     </article>

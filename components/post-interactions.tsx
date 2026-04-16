@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { apiFetch } from "@/lib/api";
 import { trackEvent } from "@/lib/analytics";
@@ -22,6 +22,11 @@ export function LikeButton({
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    setLiked(initialLiked);
+    setCount(initialCount);
+  }, [initialLiked, initialCount]);
+
   async function toggleLike() {
     if (busy) {
       return;
@@ -32,6 +37,11 @@ export function LikeButton({
       return;
     }
 
+    const nextLiked = !liked;
+    const nextCount = Math.max(0, count + (nextLiked ? 1 : -1));
+
+    setLiked(nextLiked);
+    setCount(nextCount);
     setBusy(true);
     setMessage(null);
 
@@ -43,6 +53,8 @@ export function LikeButton({
       setCount(data.likeCount);
       trackEvent("post_liked", { liked: data.liked });
     } catch (error) {
+      setLiked(liked);
+      setCount(count);
       setMessage(error instanceof Error ? error.message : "Unable to update like");
     } finally {
       setBusy(false);

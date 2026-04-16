@@ -5,6 +5,21 @@ import { getCurrentUser, requireUser } from "@/lib/auth";
 import { getReadTimeMinutes, makeSlug, normalizeExcerpt } from "@/lib/utils";
 import { postSchema } from "@/lib/validations";
 
+const recommendationSelect = {
+  id: true,
+  title: true,
+  excerpt: true,
+  slug: true,
+  tags: true,
+  createdAt: true,
+  author: {
+    select: {
+      name: true,
+      username: true,
+    },
+  },
+} as const;
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ postId: string }> },
@@ -129,21 +144,87 @@ export async function GET(
 
   let isFollowingAuthor = false;
 
-  if (user && user.id !== updatedPost.author.id) {
-    const follow = await prisma.follow.findUnique({
+  const [follow, authorPosts, similarTagCandidates] = await Promise.all([
+    user && user.id !== updatedPost.author.id
+      ? prisma.follow.findUnique({
+          where: {
+            followerId_followingId: {
+              followerId: user.id,
+              followingId: updatedPost.author.id,
+            },
+          },
+          select: {
+            id: true,
+          },
+        })
+      : Promise.resolve(null),
+    prisma.post.findMany({
       where: {
-        followerId_followingId: {
-          followerId: user.id,
-          followingId: updatedPost.author.id,
+        authorId: updatedPost.author.id,
+        id: {
+          not: updatedPost.id,
         },
+        isPublished: true,
       },
-      select: {
-        id: true,
+      orderBy: {
+        createdAt: "desc",
       },
-    });
+      take: 3,
+      select: recommendationSelect,
+    }),
+    updatedPost.tags.length
+      ? prisma.post.findMany({
+          where: {
+            id: {
+              not: updatedPost.id,
+            },
+            isPublished: true,
+            tags: {
+              hasSome: updatedPost.tags,
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 12,
+          select: recommendationSelect,
+        })
+      : Promise.resolve([]),
+  ]);
 
-    isFollowingAuthor = Boolean(follow);
-  }
+  isFollowingAuthor = Boolean(follow);
+
+  const similarPosts = similarTagCandidates
+    .map((candidate) => ({
+      ...candidate,
+      sharedTagCount: candidate.tags.filter((tag) => updatedPost.tags.includes(tag)).length,
+    }))
+    .sort((left, right) => {
+      if (right.sharedTagCount !== left.sharedTagCount) {
+        return right.sharedTagCount - left.sharedTagCount;
+      }
+
+      return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+    })
+    .slice(0, 3)
+    .map(({ sharedTagCount: _sharedTagCount, ...candidate }) => candidate);
+
+  const readNext =
+    similarPosts.length > 0
+      ? similarPosts
+      : await prisma.post.findMany({
+          where: {
+            id: {
+              not: updatedPost.id,
+            },
+            isPublished: true,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 3,
+          select: recommendationSelect,
+        });
 
   return NextResponse.json({
     post: {
@@ -165,6 +246,8 @@ export async function GET(
         isFollowing: isFollowingAuthor,
       },
     },
+    readNext,
+    moreFromAuthor: authorPosts,
   });
 }
 

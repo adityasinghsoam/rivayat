@@ -116,30 +116,33 @@ export function sanitizeRichText(html: string) {
     allowProtocolRelative: false,
     transformTags: {
       a: (_tagName, attribs) => {
-        const href = isSafeUrl(attribs.href, SAFE_LINK_SCHEMES) ? normalizeUrlCandidate(attribs.href ?? "") : undefined;
+        const href = isSafeUrl(attribs.href, SAFE_LINK_SCHEMES) ? normalizeUrlCandidate(attribs.href ?? "") : "";
+        const safeAnchorAttribs: Record<string, string> = href
+          ? {
+              href,
+              target: "_blank",
+              rel: "noopener noreferrer",
+            }
+          : {};
+
         return {
           tagName: "a",
-          attribs: href
-            ? {
-                href,
-                target: "_blank",
-                rel: "noopener noreferrer",
-              }
-            : {},
+          attribs: safeAnchorAttribs,
         };
       },
       img: (_tagName, attribs) => {
-        const src = isSafeUrl(attribs.src, SAFE_IMAGE_SCHEMES) ? normalizeUrlCandidate(attribs.src ?? "") : undefined;
+        const src = isSafeUrl(attribs.src, SAFE_IMAGE_SCHEMES) ? normalizeUrlCandidate(attribs.src ?? "") : "";
         const alt = typeof attribs.alt === "string" ? decodeHtmlEntities(attribs.alt).slice(0, 300) : "";
+        const safeImageAttribs: Record<string, string> = src
+          ? {
+              src,
+              alt,
+            }
+          : {};
 
         return {
           tagName: "img",
-          attribs: src
-            ? {
-                src,
-                alt,
-              }
-            : {},
+          attribs: safeImageAttribs,
         };
       },
     },
